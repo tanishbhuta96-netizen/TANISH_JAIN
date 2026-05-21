@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALOK BAGS — GST / Tax</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page-hero { background: linear-gradient(135deg, #004d40 0%, #00695c 100%); border-radius: 14px; padding: 32px 28px; margin-bottom: 28px; color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .page-hero h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .page-hero p { font-size: 13px; color: rgba(255,255,255,0.72); }
+    .hero-icon { width: 64px; height: 64px; background: rgba(255,255,255,0.12); border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .gst-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .gst-card { background: #fff; border-radius: 14px; border: 0.5px solid #e0ddd8; padding: 24px; }
+    .gst-card h3 { font-size: 13px; font-weight: 600; color: #555; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.4px; }
+    .gst-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f5f5f5; font-size: 13px; }
+    .gst-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .gst-row-label { color: #666; }
+    .gst-row-val { font-weight: 600; color: #222; }
+    .gst-row-val.green { color: #1e8e3e; }
+    .gst-row-val.red { color: #c62828; }
+    .gst-row-val.blue { color: #1a73e8; }
+    .returns-section { background: #fff; border-radius: 14px; border: 0.5px solid #e0ddd8; overflow: hidden; }
+    .returns-header { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+    .returns-header h3 { font-size: 14px; font-weight: 600; color: #333; }
+    .period-tabs { display: flex; gap: 6px; }
+    .period-tab { padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 500; color: #666; cursor: pointer; border: 1px solid #e0e0e0; background: #fff; }
+    .period-tab.active { background: #009688; color: #fff; border-color: #009688; }
+    .returns-list { padding: 0; }
+    .return-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid #fafafa; }
+    .return-item:last-child { border-bottom: none; }
+    .return-name { font-size: 13px; font-weight: 500; color: #333; }
+    .return-period { font-size: 11px; color: #aaa; margin-top: 2px; }
+    .return-status { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+    .status-due { background: #fff3e0; color: #e65100; }
+    .status-filed { background: #e6f4ea; color: #1e7e34; }
+    .status-na { background: #f5f5f5; color: #aaa; }
+    .badge-wip { display: inline-block; background: #fff3e0; color: #e65100; font-size: 11px; font-weight: 600; padding: 4px 12px; border-radius: 20px; border: 1px solid #ffcc80; }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="top-nav__left">
+      <a href="index.html" class="logo-box">AB</a>
+      <a href="index.html" class="brand-name">ALOK BAGS</a>
+    </div>
+    <ul class="top-nav__links">
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="manufacturing.html">Manufacturing</a></li>
+      <li><a href="sales.html" class="active">Accounts</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="top-nav__user">
+      <div class="avatar-chip">AD</div>
+      <span class="user-name">Admin</span>
+    </div>
+  </nav>
+
+  <nav class="sub-nav">
+    <ul>
+      <li><a href="index.html">Overview</a></li>
+      <li><a href="sales.html">Sales</a></li>
+      <li><a href="purchases.html">Purchase</a></li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="production.html">Production</a></li>
+      <li><a href="inventory.html">Inventory</a></li>
+      <li><a href="dispatch.html">Dispatch</a></li>
+      <li><a href="ledger.html">Ledger</a></li>
+      <li><a href="gst.html" class="active">GST / Tax</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+
+    <div class="page-hero">
+      <div>
+        <h1>GST / Tax Management</h1>
+        <p>Track output tax, input credits, returns calendar and filing status</p>
+      </div>
+      <div class="hero-icon">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="9" y1="13" x2="15" y2="13"/>
+          <line x1="9" y1="17" x2="15" y2="17"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- GST Summary Cards -->
+    <div class="gst-grid">
+      <div class="gst-card">
+        <h3>📤 Output Tax (Sales)</h3>
+        <div class="gst-row"><span class="gst-row-label">CGST Collected</span><span class="gst-row-val blue" id="cgst-out">Loading...</span></div>
+        <div class="gst-row"><span class="gst-row-label">SGST Collected</span><span class="gst-row-val blue" id="sgst-out">Loading...</span></div>
+        <div class="gst-row"><span class="gst-row-label">IGST Collected</span><span class="gst-row-val blue" id="igst-out">Loading...</span></div>
+        <div class="gst-row"><span class="gst-row-label" style="font-weight:600;">Total Output Tax</span><span class="gst-row-val green" id="total-out">Loading...</span></div>
+      </div>
+      <div class="gst-card">
+        <h3>📥 Input Tax Credit (Purchases)</h3>
+        <div class="gst-row"><span class="gst-row-label">CGST Paid</span><span class="gst-row-val green" id="cgst-in">₹0.00</span></div>
+        <div class="gst-row"><span class="gst-row-label">SGST Paid</span><span class="gst-row-val green" id="sgst-in">₹0.00</span></div>
+        <div class="gst-row"><span class="gst-row-label">IGST Paid</span><span class="gst-row-val green" id="igst-in">₹0.00</span></div>
+        <div class="gst-row"><span class="gst-row-label" style="font-weight:600;">Total ITC Available</span><span class="gst-row-val green" id="total-in">₹0.00</span></div>
+      </div>
+      <div class="gst-card">
+        <h3>⚖️ Net Tax Liability</h3>
+        <div class="gst-row"><span class="gst-row-label">Output Tax</span><span class="gst-row-val blue" id="net-out">Loading...</span></div>
+        <div class="gst-row"><span class="gst-row-label">ITC Available</span><span class="gst-row-val green" id="net-itc">₹0.00</span></div>
+        <div class="gst-row" style="margin-top:8px; padding-top:12px; border-top:2px solid #f0f0f0; border-bottom:none;">
+          <span class="gst-row-label" style="font-weight:700; color:#333;">Net Payable</span>
+          <span class="gst-row-val red" id="net-payable" style="font-size:18px;">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- GST Returns Calendar -->
+    <div class="returns-section">
+      <div class="returns-header">
+        <h3>📅 GST Returns Calendar — FY 2025–26</h3>
+        <span class="badge-wip">Auto-filing coming soon</span>
+      </div>
+      <div class="returns-list">
+        <div class="return-item">
+          <div><div class="return-name">GSTR-1 — Outward Supplies</div><div class="return-period">Monthly — due 11th of next month</div></div>
+          <span class="return-status status-due">Due Soon</span>
+        </div>
+        <div class="return-item">
+          <div><div class="return-name">GSTR-3B — Summary Return</div><div class="return-period">Monthly — due 20th of next month</div></div>
+          <span class="return-status status-due">Due Soon</span>
+        </div>
+        <div class="return-item">
+          <div><div class="return-name">GSTR-2A / 2B — ITC Statement</div><div class="return-period">Auto-populated by GSTN</div></div>
+          <span class="return-status status-na">Auto-populated</span>
+        </div>
+        <div class="return-item">
+          <div><div class="return-name">GSTR-9 — Annual Return</div><div class="return-period">FY 2024–25 — due 31 Dec 2025</div></div>
+          <span class="return-status status-filed">Filed</span>
+        </div>
+        <div class="return-item">
+          <div><div class="return-name">GSTR-9C — Reconciliation Statement</div><div class="return-period">FY 2024–25 (if turnover &gt; ₹5 Cr)</div></div>
+          <span class="return-status status-na">N/A</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function fmt(n) {
+      return '₹' + Number(n || 0).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+    }
+
+    async function loadGSTSummary() {
+      try {
+        const res = await fetch('api/invoices.php');
+        if (!res.ok) throw new Error('API error');
+        const invoices = await res.json();
+
+        let cgst = 0, sgst = 0, igst = 0;
+        invoices.forEach(inv => {
+          if (inv.bill_type === 'gst') {
+            cgst += parseFloat(inv.cgst_amount || 0);
+            sgst += parseFloat(inv.sgst_amount || 0);
+            igst += parseFloat(inv.igst_amount || 0);
+          }
+        });
+
+        const total = cgst + sgst + igst;
+        document.getElementById('cgst-out').textContent = fmt(cgst);
+        document.getElementById('sgst-out').textContent = fmt(sgst);
+        document.getElementById('igst-out').textContent = fmt(igst);
+        document.getElementById('total-out').textContent = fmt(total);
+        document.getElementById('net-out').textContent = fmt(total);
+        document.getElementById('net-payable').textContent = fmt(total);
+      } catch(e) {
+        ['cgst-out','sgst-out','igst-out','total-out','net-out','net-payable'].forEach(id => {
+          document.getElementById(id).textContent = '₹0.00';
+        });
+      }
+    }
+
+    loadGSTSummary();
+  </script>
+</body>
+</html>

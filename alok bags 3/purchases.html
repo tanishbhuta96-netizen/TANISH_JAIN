@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ALOK BAGS — Purchases</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="sales.css">
+</head>
+
+<body>
+
+  <!-- ═══════════ TOP NAVBAR ═══════════ -->
+  <nav class="top-nav" id="top-nav">
+    <div class="top-nav__left">
+      <a href="index.html" class="logo-box" id="logo-box">AB</a>
+      <a href="index.html" class="brand-name">ALOK BAGS</a>
+    </div>
+    <ul class="top-nav__links" id="main-nav-links">
+      <li><a href="index.html" id="nav-dashboard">Dashboard</a></li>
+      <li><a href="manufacturing.html" id="nav-manufacturing">Manufacturing</a></li>
+      <li><a href="sales.html" class="active" id="nav-accounts">Accounts</a></li>
+      <li><a href="reports.html" id="nav-reports">Reports</a></li>
+      <li><a href="settings.html" id="nav-settings">Settings</a></li>
+    </ul>
+    <div class="top-nav__user" id="user-chip">
+      <div class="avatar-chip">AD</div>
+      <span class="user-name">Admin</span>
+    </div>
+  </nav>
+
+  <!-- ═══════════ SUB NAVBAR ═══════════ -->
+  <nav class="sub-nav" id="sub-nav">
+    <ul>
+      <li><a href="index.html" id="sub-overview">Overview</a></li>
+      <li><a href="sales.html" id="sub-sales">Sales</a></li>
+      <li><a href="purchases.html" class="active" id="sub-purchase">Purchase</a></li>
+      <li><a href="payments.html" id="sub-payments">Payments</a></li>
+      <li><a href="#" id="sub-production">Production</a></li>
+      <li><a href="#" id="sub-inventory">Inventory</a></li>
+      <li><a href="#" id="sub-dispatch">Dispatch</a></li>
+      <li><a href="ledger.html" id="sub-ledger">Ledger</a></li>
+      <li><a href="#" id="sub-gst">GST / Tax</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══════════ MAIN CONTENT ═══════════ -->
+  <main class="main-content">
+    
+    <!-- ── PAGE HEADER ── -->
+    <header class="sales-header">
+      <div>
+        <h1 class="sales-title">Purchase Bills</h1>
+        <p class="sales-subtitle">Manage vendor bills, purchases, and payments out</p>
+      </div>
+      <div class="sales-actions">
+        <button class="btn-primary" onclick="openPurchaseModal()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Purchase Bill
+        </button>
+      </div>
+    </header>
+
+    <!-- ── STATS ROW ── -->
+    <section class="stats-row" id="sales-stats-row">
+      <div class="stat-card">
+        <span class="stat-label">Total Payable (Pending)</span>
+        <span class="stat-value text-red" id="stat-outstanding">₹0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Paid (This Month)</span>
+        <span class="stat-value text-green" id="stat-paid">₹0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Purchases</span>
+        <span class="stat-value" id="stat-count">0</span>
+      </div>
+    </section>
+
+    <!-- ── FILTER BAR ── -->
+    <div class="filter-panel">
+      <div class="filter-group">
+        <label>Status</label>
+        <select id="filter-status" onchange="loadPurchases()">
+          <option value="all">All Statuses</option>
+          <option value="unpaid">Unpaid / Due</option>
+          <option value="partial">Partially Paid</option>
+          <option value="paid">Paid</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Vendor</label>
+        <select id="filter-vendor" onchange="loadPurchases()">
+          <option value="">All Vendors</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>From Date</label>
+        <input type="date" id="filter-from" onchange="loadPurchases()">
+      </div>
+      <div class="filter-group">
+        <label>To Date</label>
+        <input type="date" id="filter-to" onchange="loadPurchases()">
+      </div>
+      <button class="btn-text" onclick="clearFilters()">Clear</button>
+    </div>
+
+    <!-- ── LIST ── -->
+    <div class="invoice-table-wrapper">
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Bill No.</th>
+            <th>Vendor</th>
+            <th class="col-amt">Amount</th>
+            <th class="col-amt">Paid</th>
+            <th class="col-amt">Balance</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="invoice-tbody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- ═══════════ NEW PURCHASE MODAL (FULL SCREEN) ═══════════ -->
+  <div class="modal-overlay" id="overlay-invoice"></div>
+  <div class="fs-modal" id="modal-invoice">
+    <div class="fs-modal__header">
+      <div>
+        <h2 class="fs-title">Record Purchase Bill</h2>
+      </div>
+      <button class="modal__close" onclick="closePurchaseModal()"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="fs-modal__body">
+      
+      <div class="inv-top">
+        <div class="inv-field wide">
+          <label>Vendor / Supplier *</label>
+          <select id="inv-party"></select>
+        </div>
+        <div class="inv-field">
+          <label>Bill No. *</label>
+          <input type="text" id="inv-no" placeholder="Enter supplier bill no.">
+        </div>
+        <div class="inv-field" style="display:flex; flex-direction:column;">
+          <label>Bill Image / PDF</label>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <input type="file" id="inv-bill-image" accept="image/*" onchange="previewBillImage(this)">
+            <button class="btn-primary" id="btn-scan-ai" onclick="scanBillAI()" type="button" style="padding:6px 12px; font-size:12px; background:#7c4dff;">✨ Scan with AI</button>
+          </div>
+          <div id="scan-status" style="font-size:11px; color:#666; margin-top:4px;"></div>
+        </div>
+        <div class="inv-field">
+          <label>Purchase Date *</label>
+          <input type="date" id="inv-date">
+        </div>
+        
+        <!-- Preview Row -->
+        <div id="preview-row" style="display:none; margin-top:15px; margin-bottom:15px; background:#f9f9f9; padding:10px; border:1px solid #ddd; border-radius:6px; max-height:200px; overflow-y:auto;">
+          <div style="display:flex; gap:20px;">
+            <div style="flex:1;">
+              <p style="margin:0 0 5px 0; font-weight:bold; font-size:12px;">Image Preview</p>
+              <img id="bill-preview-img" src="" style="max-width:100%; max-height:150px; border:1px solid #ccc;">
+            </div>
+            <div style="flex:2;">
+              <p style="margin:0 0 5px 0; font-weight:bold; font-size:12px;">AI Extracted Data (Raw)</p>
+              <pre id="ai-raw-text" style="font-size:10px; background:#fff; padding:5px; border:1px solid #ccc; height:130px; overflow-y:auto; margin:0;"></pre>
+            </div>
+          </div>
+        </div>
+        
+        <div class="inv-field">
+          <label>Due Date</label>
+          <input type="date" id="inv-due-date">
+        </div>
+      </div>
+
+      <div class="inv-items-section">
+        <table class="inv-items-table">
+          <thead>
+            <tr>
+              <th width="40%">Item / Product</th>
+              <th width="10%">Qty</th>
+              <th width="10%">Unit</th>
+              <th width="12%">Rate (₹)</th>
+              <th width="10%">Disc %</th>
+              <th width="10%" class="col-gst">GST %</th>
+              <th width="15%" style="text-align:right">Amount (₹)</th>
+              <th width="5%"></th>
+            </tr>
+          </thead>
+          <tbody id="inv-items-body">
+            <!-- Items injected by JS -->
+          </tbody>
+        </table>
+        <button class="btn-add-item" onclick="addPurchaseItemRow()">+ Add Item</button>
+      </div>
+
+      <div class="inv-bottom" style="display:flex; justify-content:space-between; margin-top:20px;">
+        <div class="inv-notes" style="width:40%;">
+          <label>Notes / Terms</label>
+          <textarea id="inv-notes" rows="4" placeholder="Delivery notes..."></textarea>
+          
+          <div style="margin-top:20px;">
+            <label>Initial Payment Paid Now</label>
+            <input type="number" id="inv-initial-paid" value="0" step="0.01" style="width:100%; padding:8px;" onchange="calculateTotals()">
+          </div>
+        </div>
+        <div class="inv-summary" style="width:40%;">
+          <div class="summary-row"><span>Subtotal:</span> <span id="sum-subtotal">₹0.00</span></div>
+          <div class="summary-row row-gst"><span>Tax Amount:</span> <span id="sum-tax">₹0.00</span></div>
+          
+          <!-- Extra Charges -->
+          <div class="summary-row" style="margin-top:10px; align-items:center;">
+            <span>Transport Charges:</span> 
+            <input type="number" id="sum-transport" value="0" step="0.01" style="width:80px; text-align:right; padding:4px;" onchange="calculateTotals()">
+          </div>
+          <div class="summary-row" style="margin-top:5px; align-items:center;">
+            <span>Extra Charges (Loading etc):</span> 
+            <input type="number" id="sum-extra" value="0" step="0.01" style="width:80px; text-align:right; padding:4px;" onchange="calculateTotals()">
+          </div>
+
+          <div class="summary-row grand-total" style="margin-top:15px; padding-top:15px; border-top:2px solid #ddd;">
+            <span>Grand Total:</span> <span id="sum-total">₹0.00</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="fs-modal__footer">
+      <button class="btn-text" onclick="closePurchaseModal()">Cancel</button>
+      <button class="btn-primary" onclick="savePurchase()">Save Purchase Bill</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ RECORD PAYMENT MODAL ═══════════ -->
+  <div class="modal-overlay" id="overlay-payment"></div>
+  <div class="sm-modal" id="modal-payment">
+    <div class="sm-modal__header">
+      <h3>Record Payment Out</h3>
+      <button class="modal__close" onclick="closePaymentModal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="sm-modal__body">
+      <input type="hidden" id="pay-inv-id">
+      <div class="inv-field" style="margin-bottom:12px;">
+        <label>Bill Balance</label>
+        <div id="pay-balance" style="font-size:18px; font-weight:bold;">₹0.00</div>
+      </div>
+      <div class="inv-field" style="margin-bottom:12px;">
+        <label>Amount Paid (₹) *</label>
+        <input type="number" id="pay-amount" step="0.01" style="font-size:20px; padding:10px;">
+      </div>
+      <div class="inv-field" style="margin-bottom:12px;">
+        <label>Payment Method</label>
+        <select id="pay-method">
+          <option value="cash">Cash</option>
+          <option value="upi">UPI</option>
+          <option value="bank">Bank Transfer</option>
+        </select>
+      </div>
+      <div class="inv-field" style="margin-bottom:12px;">
+        <label>Date *</label>
+        <input type="date" id="pay-date">
+      </div>
+      <div class="inv-field">
+        <label>Note</label>
+        <textarea id="pay-note" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="sm-modal__footer">
+      <button class="btn-text" onclick="closePaymentModal()">Cancel</button>
+      <button class="btn-primary" onclick="savePayment()">Save Payment</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ VIEW PAYMENTS MODAL ═══════════ -->
+  <div class="modal-overlay" id="overlay-history"></div>
+  <div class="sm-modal" id="modal-history" style="width: 550px;">
+    <div class="sm-modal__header">
+      <h3 id="history-modal-title">Payment History</h3>
+      <button class="modal__close" onclick="closeHistoryModal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="sm-modal__body" style="padding: 0;">
+      <table class="invoice-table" style="margin: 0; border: none; border-radius: 0;">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Method</th>
+            <th>Note</th>
+            <th class="col-amt">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="history-tbody">
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- Tesseract.js -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="purchases.js"></script>
+</body>
+</html>

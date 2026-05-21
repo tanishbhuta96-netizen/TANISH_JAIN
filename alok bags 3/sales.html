@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ALOK BAGS — Sales Invoices</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="sales.css">
+</head>
+
+<body>
+
+  <!-- ═══════════ TOP NAVBAR ═══════════ -->
+  <nav class="top-nav" id="top-nav">
+    <div class="top-nav__left">
+      <a href="index.html" class="logo-box" id="logo-box">AB</a>
+      <a href="index.html" class="brand-name">ALOK BAGS</a>
+    </div>
+    <ul class="top-nav__links" id="main-nav-links">
+      <li><a href="index.html" id="nav-dashboard">Dashboard</a></li>
+      <li><a href="manufacturing.html" id="nav-manufacturing">Manufacturing</a></li>
+      <li><a href="sales.html" class="active" id="nav-accounts">Accounts</a></li>
+      <li><a href="reports.html" id="nav-reports">Reports</a></li>
+      <li><a href="settings.html" id="nav-settings">Settings</a></li>
+    </ul>
+    <div class="top-nav__user" id="user-chip">
+      <div class="avatar-chip">AD</div>
+      <span class="user-name">Admin</span>
+    </div>
+  </nav>
+
+  <!-- ═══════════ SUB NAVBAR ═══════════ -->
+  <nav class="sub-nav" id="sub-nav">
+    <ul>
+      <li><a href="index.html" id="sub-overview">Overview</a></li>
+      <li><a href="sales.html" class="active" id="sub-sales">Sales</a></li>
+      <li><a href="purchases.html" id="sub-purchase">Purchase</a></li>
+      <li><a href="payments.html" id="sub-payments">Payments</a></li>
+      <li><a href="#" id="sub-production">Production</a></li>
+      <li><a href="#" id="sub-inventory">Inventory</a></li>
+      <li><a href="#" id="sub-dispatch">Dispatch</a></li>
+      <li><a href="ledger.html" id="sub-ledger">Ledger</a></li>
+      <li><a href="#" id="sub-gst">GST / Tax</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══════════ MAIN CONTENT ═══════════ -->
+  <main class="main-content">
+
+    <!-- ── PAGE HEADER ── -->
+    <header class="sales-header">
+      <div>
+        <h1 class="sales-title">Sales Invoices</h1>
+        <p class="sales-subtitle">Manage billing, invoices, and sales history</p>
+      </div>
+      <div class="sales-actions">
+        <button class="btn-primary" onclick="openInvoiceModal()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          New Invoice
+        </button>
+      </div>
+    </header>
+
+    <!-- ── STATS ROW ── -->
+    <section class="stats-row" id="sales-stats-row">
+      <div class="stat-card">
+        <span class="stat-label">Total Outstanding</span>
+        <span class="stat-value text-red" id="stat-outstanding">₹0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Total Paid (This Month)</span>
+        <span class="stat-value text-green" id="stat-paid">₹0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Invoice Count</span>
+        <span class="stat-value" id="stat-count">0</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Active Parties</span>
+        <span class="stat-value text-blue" id="stat-parties">0</span>
+      </div>
+    </section>
+
+    <!-- ── VIEW TOGGLE ── -->
+    <div class="view-toggle-container">
+      <div class="view-toggle">
+        <button id="btn-view-invoice" class="toggle-btn active" onclick="switchView('invoice')">Invoice View</button>
+        <button id="btn-view-party" class="toggle-btn" onclick="switchView('party')">Party View</button>
+      </div>
+    </div>
+
+    <!-- ── FILTER BAR ── -->
+    <div class="filter-panel">
+      <div class="filter-group" id="group-filter-search">
+        <label>Search Party</label>
+        <input type="text" id="filter-search" placeholder="Search by name..." onkeyup="debounceLoadData()">
+      </div>
+      <div class="filter-group">
+        <label>Status</label>
+        <select id="filter-status" onchange="loadData()">
+          <option value="all">All Statuses</option>
+          <option value="unpaid">Unpaid / Due</option>
+          <option value="partial">Partially Paid</option>
+          <option value="paid">Paid</option>
+        </select>
+      </div>
+      <div class="filter-group" id="group-filter-customer">
+        <label>Customer</label>
+        <select id="filter-customer" onchange="loadData()">
+          <option value="">All Customers</option>
+        </select>
+      </div>
+      <div class="filter-group" id="group-filter-from">
+        <label>From Date</label>
+        <input type="date" id="filter-from" onchange="loadData()">
+      </div>
+      <div class="filter-group" id="group-filter-to">
+        <label>To Date</label>
+        <input type="date" id="filter-to" onchange="loadData()">
+      </div>
+      <button class="btn-text" onclick="clearFilters()">Clear</button>
+    </div>
+
+    <!-- ── INVOICE LIST ── -->
+    <div class="invoice-table-wrapper" id="invoice-table-wrapper">
+      <table class="invoice-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Invoice No.</th>
+            <th>Customer</th>
+            <th class="col-amt">Amount</th>
+            <th class="col-amt">Paid</th>
+            <th class="col-amt">Balance</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="invoice-tbody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── PARTY LIST ── -->
+    <div class="invoice-table-wrapper" id="party-table-wrapper" style="display: none;">
+      <table class="invoice-table party-summary-table">
+        <thead>
+          <tr>
+            <th style="width: 40px;"></th>
+            <th>Party Name</th>
+            <th style="text-align: center;">Bills Count</th>
+            <th class="col-amt">Total ₹</th>
+            <th class="col-amt">Paid ₹</th>
+            <th class="col-amt">Pending ₹</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="party-tbody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <!-- ═══════════ NEW INVOICE MODAL (FULL SCREEN) ═══════════ -->
+  <div class="modal-overlay" id="overlay-invoice"></div>
+  <div class="fs-modal" id="modal-invoice">
+    <div class="fs-modal__header">
+      <div>
+        <h2 class="fs-title" id="inv-modal-title">Create New Tax Invoice</h2>
+      </div>
+      <div class="walkin-toggle-wrapper">
+        <label><input type="radio" name="customer_type" value="saved" checked onchange="toggleCustomerType()"> Saved
+          Party</label>
+        <label><input type="radio" name="customer_type" value="walkin" onchange="toggleCustomerType()">
+          Manual/Walk-in</label>
+      </div>
+      <button class="modal__close" onclick="closeInvoiceModal()"><svg viewBox="0 0 24 24" width="24" height="24"
+          fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg></button>
+    </div>
+    <div class="fs-modal__body">
+
+      <div class="inv-top">
+        <div class="inv-field wide" id="field-saved-party">
+          <label>Customer / Party *</label>
+          <div class="autocomplete-wrapper">
+            <input type="hidden" id="inv-party-id">
+            <input type="text" id="inv-party-search" placeholder="Type to search party..." autocomplete="off">
+            <ul class="autocomplete-list" id="party-autocomplete-list"></ul>
+          </div>
+        </div>
+        <div class="inv-field wide" id="field-walkin-party" style="display:none; gap:16px; flex-direction:row;">
+          <div style="flex:2;"><label>Customer Name *</label><input type="text" id="inv-walkin-name"
+              placeholder="Walk-in name"></div>
+          <div style="flex:1;"><label>Phone</label><input type="text" id="inv-walkin-phone" placeholder="Phone"></div>
+          <div style="flex:1;">
+            <label>State *</label>
+            <select id="inv-walkin-state" onchange="handleStateChange()">
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+              <option value="Assam">Assam</option>
+              <option value="Bihar">Bihar</option>
+              <option value="Chhattisgarh">Chhattisgarh</option>
+              <option value="Goa">Goa</option>
+              <option value="Gujarat">Gujarat</option>
+              <option value="Haryana">Haryana</option>
+              <option value="Himachal Pradesh">Himachal Pradesh</option>
+              <option value="Jharkhand">Jharkhand</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Kerala">Kerala</option>
+              <option value="Madhya Pradesh">Madhya Pradesh</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Manipur">Manipur</option>
+              <option value="Meghalaya">Meghalaya</option>
+              <option value="Mizoram">Mizoram</option>
+              <option value="Nagaland">Nagaland</option>
+              <option value="Odisha">Odisha</option>
+              <option value="Punjab">Punjab</option>
+              <option value="Rajasthan" selected>Rajasthan</option>
+              <option value="Sikkim">Sikkim</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Telangana">Telangana</option>
+              <option value="Tripura">Tripura</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+              <option value="Uttarakhand">Uttarakhand</option>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+              <option value="Chandigarh">Chandigarh</option>
+              <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+              <option value="Ladakh">Ladakh</option>
+              <option value="Lakshadweep">Lakshadweep</option>
+              <option value="Puducherry">Puducherry</option>
+            </select>
+          </div>
+        </div>
+        <div class="inv-field">
+          <label>Bill Type *</label>
+          <select id="inv-bill-type" onchange="toggleBillType()">
+            <option value="gst">Tax Invoice (With GST)</option>
+            <option value="non_gst">Retail Invoice (Without GST)</option>
+          </select>
+        </div>
+        <div class="inv-field">
+          <label>Invoice Date *</label>
+          <input type="date" id="inv-date">
+        </div>
+        <div class="inv-field">
+          <label>Due Date</label>
+          <input type="date" id="inv-due-date">
+        </div>
+        <div class="inv-field">
+          <label>Invoice No. (Auto)</label>
+          <input type="text" id="inv-no" placeholder="Leave blank to auto generate" readonly style="background:#f5f5f5">
+        </div>
+      </div>
+
+      <div class="inv-items-section">
+        <table class="inv-items-table">
+          <thead>
+            <tr>
+              <th width="40%">Item / Product</th>
+              <th width="10%">Qty</th>
+              <th width="10%">Unit</th>
+              <th width="12%">Rate (₹)</th>
+              <th width="10%">Disc %</th>
+              <th width="10%" class="col-gst">GST %</th>
+              <th width="15%" style="text-align:right">Amount (₹)</th>
+              <th width="5%"></th>
+            </tr>
+          </thead>
+          <tbody id="inv-items-body">
+            <!-- Items injected by JS -->
+          </tbody>
+        </table>
+        <button class="btn-add-item" onclick="addInvoiceItemRow()">+ Add Item</button>
+      </div>
+
+      <div class="inv-bottom">
+        <div class="inv-notes">
+          <label>Notes / Terms</label>
+          <textarea id="inv-notes" rows="4" placeholder="Terms and conditions, delivery notes..."></textarea>
+        </div>
+        <div class="inv-summary">
+          <div class="summary-row"><span>Subtotal:</span> <span id="sum-subtotal">₹0.00</span></div>
+          <div class="summary-row"><span>Discount:</span> <span id="sum-discount" class="text-red">-₹0.00</span></div>
+          <div class="summary-row"><span>Taxable Value:</span> <span id="sum-taxable">₹0.00</span></div>
+          <div class="summary-row row-cgst-sgst"><span>CGST:</span> <span id="sum-cgst">₹0.00</span></div>
+          <div class="summary-row row-cgst-sgst"><span>SGST:</span> <span id="sum-sgst">₹0.00</span></div>
+          <div class="summary-row row-igst" style="display:none;"><span>IGST:</span> <span id="sum-igst">₹0.00</span>
+          </div>
+          <div class="summary-row grand-total"><span>Grand Total:</span> <span id="sum-total">₹0.00</span></div>
+        </div>
+      </div>
+
+      <div class="inv-payment-section" id="inv-payment-box">
+        <h4 style="margin-top:0; margin-bottom:12px; color:#c0392b;">Payment Details</h4>
+        <div class="payment-modes">
+          <label class="pay-mode-label"><input type="radio" name="payment_status" value="pending" checked
+              onchange="togglePaymentFields()"> 🔴 Pending / Credit</label>
+          <label class="pay-mode-label"><input type="radio" name="payment_status" value="cash"
+              onchange="togglePaymentFields()"> 🟢 Cash Received</label>
+          <label class="pay-mode-label"><input type="radio" name="payment_status" value="upi"
+              onchange="togglePaymentFields()"> 🔵 UPI / Online</label>
+          <label class="pay-mode-label"><input type="radio" name="payment_status" value="cheque"
+              onchange="togglePaymentFields()"> 🟡 Cheque</label>
+        </div>
+
+        <div id="payment-extra-fields" style="display:none; margin-top:15px; gap:16px;">
+          <div style="flex:1;">
+            <label>Amount Received (₹) *</label>
+            <input type="number" id="inv-paid-amount" step="0.01" oninput="validatePaymentAmount()">
+            <div id="payment-warning" class="text-red" style="font-size:11px; margin-top:4px;"></div>
+          </div>
+          <div style="flex:2;">
+            <label id="label-pay-note">Payment Note / Ref</label>
+            <input type="text" id="inv-pay-note" placeholder="Transaction ID, Note, etc.">
+          </div>
+          <div id="cheque-fields" style="display:none; flex:2; gap:16px;">
+            <div style="flex:1;">
+              <label>Cheque No.</label>
+              <input type="text" id="inv-cheque-no" placeholder="6 digits">
+            </div>
+            <div style="flex:1;">
+              <label>Cheque Date</label>
+              <input type="date" id="inv-cheque-date">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="fs-modal__footer">
+      <button class="btn-text" onclick="closeInvoiceModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveInvoice()">Save & Generate Invoice</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ RECORD PAYMENT MODAL ═══════════ -->
+  <div class="modal-overlay" id="overlay-payment"></div>
+  <div class="sm-modal" id="modal-payment">
+    <div class="sm-modal__header">
+      <h3>Record Payment In</h3>
+      <button class="modal__close" onclick="closePaymentModal()"><svg viewBox="0 0 24 24" width="18" height="18"
+          fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg></button>
+    </div>
+    <div class="sm-modal__body">
+      <input type="hidden" id="pay-inv-id">
+      <div class="inv-field" style="margin-bottom:12px;">
+        <label>Invoice Balance</label>
+        <div id="pay-balance" style="font-size:18px; font-weight:bold;">₹0.00</div>
+      </div>
+      <div class="inv-field" style="margin-bottom:12px;">
+        <label>Amount Received (₹) *</label>
+        <input type="number" id="pay-amount" step="0.01" style="font-size:20px; padding:10px; border-color:#c0392b;">
+      </div>
+      <div class="inv-field" style="margin-bottom:12px;">
+        <label>Payment Method</label>
+        <select id="pay-method" onchange="updatePayNotePlaceholder()">
+          <option value="cash">💵 Cash (Hand to Hand)</option>
+          <option value="upi">📱 UPI / Online</option>
+          <option value="cheque">🧾 Cheque</option>
+          <option value="bank">🏦 Bank Transfer</option>
+        </select>
+      </div>
+      <div class="inv-field" style="margin-bottom:12px;">
+        <label>Date *</label>
+        <input type="date" id="pay-date">
+      </div>
+      <div class="inv-field">
+        <label id="pay-note-label">Reference / Note</label>
+        <input type="text" id="pay-note" placeholder="Optional note">
+      </div>
+    </div>
+    <div class="sm-modal__footer">
+      <button class="btn-text" onclick="closePaymentModal()">Cancel</button>
+      <button class="btn-receive" onclick="savePayment()">Save Payment</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ PAYMENT RECEIPT MODAL ═══════════ -->
+  <div class="modal-overlay" id="overlay-receipt"></div>
+  <div class="sm-modal" id="modal-receipt" style="width: 400px;">
+    <div class="sm-modal__header">
+      <h3 id="receipt-title">💵 Cash Payment Received</h3>
+      <button class="modal__close" onclick="closeReceiptModal()"><svg viewBox="0 0 24 24" width="18" height="18"
+          fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg></button>
+    </div>
+    <div class="sm-modal__body" id="receipt-content">
+      <div class="receipt-card">
+        <div class="receipt-row"><span>Invoice:</span> <strong id="rec-inv-no">#INV-000</strong></div>
+        <div class="receipt-row"><span>Party:</span> <strong id="rec-party">...</strong></div>
+        <div class="receipt-row"><span>Amount:</span> <strong id="rec-amount"
+            style="font-size:18px; color:#c0392b;">₹0.00</strong></div>
+        <div class="receipt-row"><span>Mode:</span> <span id="rec-mode">Cash</span></div>
+        <div class="receipt-row"><span>Date:</span> <span id="rec-date">...</span></div>
+        <div class="receipt-row"><span>Status:</span> <span id="rec-status" class="text-green">✓ Fully Paid</span></div>
+        <hr style="margin:15px 0; border:0; border-top:1px dashed #ccc;">
+        <div id="rec-note" style="font-style:italic; color:#666; text-align:center; font-size:13px;">
+          "Payment collected in cash at time of delivery"
+        </div>
+      </div>
+    </div>
+    <div class="sm-modal__footer">
+      <button class="btn-primary" onclick="printReceipt()"><svg viewBox="0 0 24 24" width="16" height="16" fill="none"
+          stroke="currentColor" stroke-width="2" style="vertical-align:middle; margin-right:5px;">
+          <path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+          <rect x="6" y="14" width="12" height="8" />
+        </svg> Print Receipt</button>
+      <button class="btn-text" onclick="closeReceiptModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ THERMAL RECEIPT (HIDDEN FOR SCREEN) ═══════════ -->
+  <div id="thermal-receipt" class="print-only">
+    <div style="text-align:center; margin-bottom:10px;">
+      <h2 style="margin:0;">ALOK BAGS</h2>
+      <p style="margin:2px 0; font-size:12px;">Payment Receipt</p>
+    </div>
+    <div style="border-top:1px dashed #000; padding:10px 0;">
+      <p><strong>Invoice:</strong> <span id="pr-inv-no"></span></p>
+      <p><strong>Party:</strong> <span id="pr-party"></span></p>
+      <p><strong>Date:</strong> <span id="pr-date"></span></p>
+      <p><strong>Mode:</strong> <span id="pr-mode"></span></p>
+      <p style="font-size:18px; margin:10px 0;"><strong>Amount:</strong> <span id="pr-amount"></span></p>
+      <p
+        style="text-align:center; font-weight:bold; border:2px solid #000; display:inline-block; padding:5px 15px; margin-top:10px;">
+        PAID</p>
+    </div>
+    <div style="text-align:center; margin-top:15px; font-size:10px;">
+      Thank You!
+    </div>
+  </div>
+  <div class="sm-modal" id="modal-history" style="width: 550px;">
+    <div class="sm-modal__header">
+      <h3 id="history-modal-title">Payment History</h3>
+      <button class="modal__close" onclick="closeHistoryModal()"><svg viewBox="0 0 24 24" width="18" height="18"
+          fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg></button>
+    </div>
+    <div class="sm-modal__body" style="padding: 0;">
+      <div id="history-success-msg"
+        style="display:none; background:#e6f4ea; color:#1e8e3e; padding:12px 20px; font-weight:600; font-size:13px; border-bottom:1px solid #c6f6d5;">
+        ✓ Payment complete — received hand to hand in cash
+      </div>
+      <table class="invoice-table" style="margin: 0; border: none; border-radius: 0;">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Method</th>
+            <th>Note/Ref</th>
+            <th class="col-amt">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="history-tbody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+      <div id="history-summary" style="padding:16px 20px; background:#f9f9f9; border-top:1px solid #eee;">
+        <div class="summary-row" style="margin-bottom:6px;"><span>Total Paid:</span> <strong
+            id="hist-total-paid">₹0.00</strong></div>
+        <div class="summary-row" style="margin-bottom:6px;"><span>Invoice Amount:</span> <span
+            id="hist-total-inv">₹0.00</span></div>
+        <div class="summary-row" style="font-size:16px; padding-top:8px; border-top:1px dashed #ccc;">
+          <span>Still Due:</span> <strong id="hist-total-due" class="text-red">₹0.00</strong>
+        </div>
+      </div>
+    </div>
+    <div class="sm-modal__footer">
+      <button class="btn-outline" id="btn-hist-print-receipt" style="display:none;"
+        onclick="printReceiptFromHistory()">Print Receipt</button>
+      <button class="btn-text" onclick="closeHistoryModal()">Close</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ QUICK ADD PARTY DRAWER ═══════════ -->
+  <div class="drawer-overlay" id="overlay-drawer" onclick="closePartyDrawer()"></div>
+  <div class="drawer-panel" id="drawer-add-party">
+    <div class="drawer-header">
+      <h3>Add New Party</h3>
+      <button class="modal__close" onclick="closePartyDrawer()"><svg viewBox="0 0 24 24" width="20" height="20"
+          fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg></button>
+    </div>
+    <div class="drawer-body">
+      <div class="inv-field" style="margin-bottom:16px;">
+        <label>Party Name *</label>
+        <input type="text" id="drawer-party-name" placeholder="Enter full name">
+      </div>
+      <div class="inv-field" style="margin-bottom:16px;">
+        <label>Phone Number</label>
+        <input type="text" id="drawer-party-phone" placeholder="Mobile">
+      </div>
+      <div class="inv-field" style="margin-bottom:16px;">
+        <label>Email Address</label>
+        <input type="email" id="drawer-party-email" placeholder="Email">
+      </div>
+      <div class="inv-field" style="margin-bottom:16px;">
+        <label>GST Number</label>
+        <input type="text" id="drawer-party-gstin" placeholder="GSTIN (optional)">
+      </div>
+      <div class="inv-field-row" style="display:flex; gap:16px; margin-bottom:16px;">
+        <div class="inv-field" style="flex:1;">
+          <label>City</label>
+          <input type="text" id="drawer-party-city" placeholder="City">
+        </div>
+        <div class="inv-field" style="flex:1;">
+          <label>State</label>
+          <select id="drawer-party-state">
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+            <option value="Assam">Assam</option>
+            <option value="Bihar">Bihar</option>
+            <option value="Chhattisgarh">Chhattisgarh</option>
+            <option value="Goa">Goa</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Haryana">Haryana</option>
+            <option value="Himachal Pradesh">Himachal Pradesh</option>
+            <option value="Jharkhand">Jharkhand</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Kerala">Kerala</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Manipur">Manipur</option>
+            <option value="Meghalaya">Meghalaya</option>
+            <option value="Mizoram">Mizoram</option>
+            <option value="Nagaland">Nagaland</option>
+            <option value="Odisha">Odisha</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Rajasthan" selected>Rajasthan</option>
+            <option value="Sikkim">Sikkim</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Tripura">Tripura</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="Uttarakhand">Uttarakhand</option>
+            <option value="West Bengal">West Bengal</option>
+            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+            <option value="Chandigarh">Chandigarh</option>
+            <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+            <option value="Ladakh">Ladakh</option>
+            <option value="Lakshadweep">Lakshadweep</option>
+            <option value="Puducherry">Puducherry</option>
+          </select>
+        </div>
+        <div class="inv-field" style="flex:1;">
+          <label>Pincode</label>
+          <input type="number" id="drawer-party-pincode" placeholder="6 digits">
+        </div>
+      </div>
+      <div class="inv-field" style="margin-bottom:16px;">
+        <label>Address</label>
+        <textarea id="drawer-party-address" rows="2" placeholder="Full Billing Address"></textarea>
+      </div>
+      <div class="inv-field" style="margin-bottom:16px;">
+        <label>Credit Limit (₹)</label>
+        <input type="text" id="drawer-party-limit" placeholder="Limit">
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="btn-text" onclick="closePartyDrawer()">Cancel</button>
+      <button class="btn-primary" onclick="saveQuickAddParty()">Save & Select</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="sales.js"></script>
+  <script src="invoice-autocomplete.js"></script>
+</body>
+
+</html>

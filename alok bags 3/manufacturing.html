@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ALOK BAGS — Manufacturing Management">
+  <title>ALOK BAGS — Manufacturing</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .coming-soon-badge {
+      display: inline-block;
+      background: #fff3e0;
+      color: #e65100;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-top: 2px;
+    }
+    .page-hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      border-radius: 14px;
+      padding: 36px 32px;
+      margin-bottom: 28px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .page-hero h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+    .page-hero p { font-size: 14px; color: rgba(255,255,255,0.65); }
+    .hero-icon {
+      width: 72px; height: 72px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .tile-available { cursor: pointer; }
+    .tile-wip { opacity: 0.6; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════ TOP NAVBAR ═══════════════ -->
+  <nav class="top-nav" id="top-nav">
+    <div class="top-nav__left">
+      <a href="index.html" class="logo-box" id="logo-box">AB</a>
+      <a href="index.html" class="brand-name">ALOK BAGS</a>
+    </div>
+    <ul class="top-nav__links" id="main-nav-links">
+      <li><a href="index.html" id="nav-dashboard">Dashboard</a></li>
+      <li><a href="manufacturing.html" class="active" id="nav-manufacturing">Manufacturing</a></li>
+      <li><a href="sales.html" id="nav-accounts">Accounts</a></li>
+      <li><a href="reports.html" id="nav-reports">Reports</a></li>
+      <li><a href="settings.html" id="nav-settings">Settings</a></li>
+    </ul>
+    <div class="top-nav__user" id="user-chip">
+      <div class="avatar-chip">AD</div>
+      <span class="user-name">Admin</span>
+    </div>
+  </nav>
+
+  <!-- ═══════════════ SUB NAVBAR ═══════════════ -->
+  <nav class="sub-nav" id="sub-nav">
+    <ul>
+      <li><a href="index.html" id="sub-overview">Overview</a></li>
+      <li><a href="sales.html" id="sub-sales">Sales</a></li>
+      <li><a href="purchases.html" id="sub-purchase">Purchase</a></li>
+      <li><a href="payments.html" id="sub-payments">Payments</a></li>
+      <li><a href="production.html" id="sub-production">Production</a></li>
+      <li><a href="inventory.html" id="sub-inventory">Inventory</a></li>
+      <li><a href="dispatch.html" id="sub-dispatch">Dispatch</a></li>
+      <li><a href="ledger.html" id="sub-ledger">Ledger</a></li>
+      <li><a href="gst.html" id="sub-gst">GST / Tax</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+  <main class="main-content">
+
+    <div class="page-hero">
+      <div>
+        <h1>Manufacturing Management</h1>
+        <p>Track production jobs, raw materials, quality control, and dispatch operations</p>
+      </div>
+      <div class="hero-icon">
+        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="1.8">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ── STATS ROW ── -->
+    <section class="stats-row">
+      <div class="stat-card">
+        <span class="stat-label">Active Work Orders</span>
+        <span class="stat-value">0</span>
+        <span class="stat-badge badge-green">No pending</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Units in Production</span>
+        <span class="stat-value">0</span>
+        <span class="stat-badge badge-green">On track</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Raw Material Stock</span>
+        <span class="stat-value">0 kg</span>
+        <span class="stat-badge badge-red">Low stock</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Ready to Dispatch</span>
+        <span class="stat-value">0</span>
+        <span class="stat-badge badge-green">Cleared</span>
+      </div>
+    </section>
+
+    <!-- ── MANUFACTURING MODULES ── -->
+    <section class="module-section">
+      <h2 class="section-label">Manufacturing Modules</h2>
+      <div class="tile-grid">
+
+        <a href="production.html" class="tile tile-available">
+          <div class="tile__icon" style="background:#e6f4ea;color:#1e8e3e;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </div>
+          <span class="tile__name">Production</span>
+          <span class="tile__sub">Job tracking</span>
+        </a>
+
+        <a href="inventory.html" class="tile tile-available">
+          <div class="tile__icon" style="background:#fef3e0;color:#e8a317;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+              <line x1="12" y1="22.08" x2="12" y2="12"/>
+            </svg>
+          </div>
+          <span class="tile__name">Inventory</span>
+          <span class="tile__sub">Stock & BOM</span>
+        </a>
+
+        <a href="dispatch.html" class="tile tile-available">
+          <div class="tile__icon" style="background:#e8f0fe;color:#1a73e8;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="1" y="3" width="15" height="13"/>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/>
+              <circle cx="5.5" cy="18.5" r="2.5"/>
+              <circle cx="18.5" cy="18.5" r="2.5"/>
+            </svg>
+          </div>
+          <span class="tile__name">Dispatch</span>
+          <span class="tile__sub">Material dispatch</span>
+        </a>
+
+        <a href="#" class="tile tile-wip" onclick="return false;">
+          <div class="tile__icon" style="background:#e0f2f1;color:#009688;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+              <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <span class="tile__name">Quality Control</span>
+          <span class="coming-soon-badge">Coming Soon</span>
+        </a>
+
+        <a href="#" class="tile tile-wip" onclick="return false;">
+          <div class="tile__icon" style="background:#fce8e0;color:#E05A20;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+              <line x1="9" y1="12" x2="15" y2="12"/>
+              <line x1="9" y1="16" x2="13" y2="16"/>
+            </svg>
+          </div>
+          <span class="tile__name">Work Orders</span>
+          <span class="coming-soon-badge">Coming Soon</span>
+        </a>
+
+        <a href="#" class="tile tile-wip" onclick="return false;">
+          <div class="tile__icon" style="background:#fce4ec;color:#d32f2f;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="1 4 1 10 7 10"/>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+            </svg>
+          </div>
+          <span class="tile__name">Returns</span>
+          <span class="coming-soon-badge">Coming Soon</span>
+        </a>
+
+        <a href="#" class="tile tile-wip" onclick="return false;">
+          <div class="tile__icon" style="background:#ede7f6;color:#7c4dff;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+          </div>
+          <span class="tile__name">Complaints</span>
+          <span class="coming-soon-badge">Coming Soon</span>
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

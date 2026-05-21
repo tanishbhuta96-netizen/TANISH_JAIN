@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALOK BAGS — Settings</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page-hero { background: linear-gradient(135deg, #263238 0%, #37474f 100%); border-radius: 14px; padding: 32px 28px; margin-bottom: 28px; color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .page-hero h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .page-hero p { font-size: 13px; color: rgba(255,255,255,0.72); }
+    .hero-icon { width: 64px; height: 64px; background: rgba(255,255,255,0.1); border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .settings-layout { display: grid; grid-template-columns: 220px 1fr; gap: 20px; }
+    .settings-sidebar { background: #fff; border-radius: 14px; border: 0.5px solid #e0ddd8; padding: 12px; height: fit-content; }
+    .settings-sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 500; color: #555; transition: background 0.15s; }
+    .settings-sidebar-item:hover { background: #f5f5f5; }
+    .settings-sidebar-item.active { background: #fce8e0; color: #E05A20; }
+    .settings-sidebar-item svg { flex-shrink: 0; }
+    .settings-content { display: flex; flex-direction: column; gap: 16px; }
+    .settings-section { background: #fff; border-radius: 14px; border: 0.5px solid #e0ddd8; overflow: hidden; }
+    .settings-section-header { padding: 16px 20px; border-bottom: 1px solid #f0f0f0; }
+    .settings-section-header h3 { font-size: 14px; font-weight: 600; color: #333; }
+    .settings-section-header p { font-size: 12px; color: #999; margin-top: 3px; }
+    .settings-field-group { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+    .settings-field { display: flex; flex-direction: column; gap: 6px; }
+    .settings-field label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.3px; }
+    .settings-field input, .settings-field select, .settings-field textarea { border: 1px solid #e0e0e0; border-radius: 8px; padding: 9px 12px; font-size: 13px; color: #333; outline: none; transition: border-color 0.2s; width: 100%; }
+    .settings-field input:focus, .settings-field select:focus, .settings-field textarea:focus { border-color: #E05A20; box-shadow: 0 0 0 3px rgba(224,90,32,0.08); }
+    .settings-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .settings-footer { display: flex; justify-content: flex-end; gap: 10px; padding: 16px 20px; background: #fafafa; border-top: 1px solid #f0f0f0; }
+    .btn-primary { background: #E05A20; color: #fff; border: none; padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
+    .btn-primary:hover { background: #c84e18; }
+    .btn-outline { background: #fff; color: #555; border: 1px solid #ddd; padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
+    .btn-outline:hover { border-color: #bbb; background: #f9f9f9; }
+    .toast { position: fixed; bottom: 24px; right: 24px; background: #333; color: #fff; padding: 12px 20px; border-radius: 10px; font-size: 13px; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 999; }
+    .toast.show { opacity: 1; }
+    @media (max-width: 768px) { .settings-layout { grid-template-columns: 1fr; } .settings-sidebar { display: none; } }
+  </style>
+</head>
+<body>
+
+  <nav class="top-nav">
+    <div class="top-nav__left">
+      <a href="index.html" class="logo-box">AB</a>
+      <a href="index.html" class="brand-name">ALOK BAGS</a>
+    </div>
+    <ul class="top-nav__links">
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="manufacturing.html">Manufacturing</a></li>
+      <li><a href="sales.html">Accounts</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="settings.html" class="active">Settings</a></li>
+    </ul>
+    <div class="top-nav__user">
+      <div class="avatar-chip">AD</div>
+      <span class="user-name">Admin</span>
+    </div>
+  </nav>
+
+  <nav class="sub-nav">
+    <ul>
+      <li><a href="index.html">Overview</a></li>
+      <li><a href="sales.html">Sales</a></li>
+      <li><a href="purchases.html">Purchase</a></li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="production.html">Production</a></li>
+      <li><a href="inventory.html">Inventory</a></li>
+      <li><a href="dispatch.html">Dispatch</a></li>
+      <li><a href="ledger.html">Ledger</a></li>
+      <li><a href="gst.html">GST / Tax</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+
+    <div class="page-hero">
+      <div>
+        <h1>Settings</h1>
+        <p>Configure your business profile, invoice settings, and preferences</p>
+      </div>
+      <div class="hero-icon">
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="settings-layout">
+      <!-- Sidebar -->
+      <div class="settings-sidebar">
+        <div class="settings-sidebar-item active" onclick="showSection('business')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Business Profile
+        </div>
+        <div class="settings-sidebar-item" onclick="showSection('invoice')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Invoice Settings
+        </div>
+        <div class="settings-sidebar-item" onclick="showSection('gst')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+          GST / Tax Info
+        </div>
+        <div class="settings-sidebar-item" onclick="showSection('bank')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Bank Details
+        </div>
+      </div>
+
+      <!-- Content Panels -->
+      <div class="settings-content">
+
+        <!-- Business Profile -->
+        <div class="settings-section" id="section-business">
+          <div class="settings-section-header">
+            <h3>🏢 Business Profile</h3>
+            <p>This info appears on invoices, receipts and statements</p>
+          </div>
+          <div class="settings-field-group">
+            <div class="settings-field">
+              <label>Business / Company Name</label>
+              <input type="text" id="biz-name" value="ALOK BAGS" placeholder="Your company name">
+            </div>
+            <div class="settings-field-row">
+              <div class="settings-field">
+                <label>Owner / Proprietor</label>
+                <input type="text" id="biz-owner" value="Alok Ji" placeholder="Owner name">
+              </div>
+              <div class="settings-field">
+                <label>Mobile</label>
+                <input type="text" id="biz-mobile" value="" placeholder="+91 98765 43210">
+              </div>
+            </div>
+            <div class="settings-field">
+              <label>Email</label>
+              <input type="email" id="biz-email" value="" placeholder="info@alokbags.com">
+            </div>
+            <div class="settings-field">
+              <label>Full Address</label>
+              <textarea id="biz-address" rows="3" placeholder="Street, City, State, PIN"></textarea>
+            </div>
+            <div class="settings-field-row">
+              <div class="settings-field">
+                <label>City</label>
+                <input type="text" id="biz-city" value="Jaipur" placeholder="City">
+              </div>
+              <div class="settings-field">
+                <label>State</label>
+                <input type="text" id="biz-state" value="Rajasthan" placeholder="State">
+              </div>
+            </div>
+          </div>
+          <div class="settings-footer">
+            <button class="btn-outline" onclick="loadSettings()">Reset</button>
+            <button class="btn-primary" onclick="saveSettings()">Save Changes</button>
+          </div>
+        </div>
+
+        <!-- Invoice Settings -->
+        <div class="settings-section" id="section-invoice">
+          <div class="settings-section-header">
+            <h3>🧾 Invoice Settings</h3>
+            <p>Configure invoice numbering and default values</p>
+          </div>
+          <div class="settings-field-group">
+            <div class="settings-field-row">
+              <div class="settings-field">
+                <label>Invoice Prefix</label>
+                <input type="text" id="inv-prefix" value="INV" placeholder="e.g. INV, ALBG">
+              </div>
+              <div class="settings-field">
+                <label>Invoice Start Number</label>
+                <input type="number" id="inv-start" value="1001" min="1">
+              </div>
+            </div>
+            <div class="settings-field">
+              <label>Default Payment Terms</label>
+              <select id="inv-terms">
+                <option value="Net 30 days" selected>Net 30 days</option>
+                <option value="Net 15 days">Net 15 days</option>
+                <option value="Net 45 days">Net 45 days</option>
+                <option value="Immediate">Immediate (Cash)</option>
+                <option value="Net 60 days">Net 60 days</option>
+              </select>
+            </div>
+            <div class="settings-field">
+              <label>Invoice Footer / Terms &amp; Conditions</label>
+              <textarea id="inv-footer" rows="3" placeholder="Thank you for your business. Goods once sold will not be taken back...">Thank you for your business! All disputes subject to Jaipur jurisdiction.</textarea>
+            </div>
+          </div>
+          <div class="settings-footer">
+            <button class="btn-outline">Reset</button>
+            <button class="btn-primary" onclick="saveSettings()">Save Changes</button>
+          </div>
+        </div>
+
+        <!-- GST Info -->
+        <div class="settings-section" id="section-gst">
+          <div class="settings-section-header">
+            <h3>📋 GST / Tax Information</h3>
+            <p>Used in invoices and GST filings</p>
+          </div>
+          <div class="settings-field-group">
+            <div class="settings-field-row">
+              <div class="settings-field">
+                <label>GSTIN</label>
+                <input type="text" id="gst-gstin" value="" placeholder="08XXXXX1234A1Z5">
+              </div>
+              <div class="settings-field">
+                <label>PAN</label>
+                <input type="text" id="gst-pan" value="" placeholder="ABCDE1234F">
+              </div>
+            </div>
+            <div class="settings-field-row">
+              <div class="settings-field">
+                <label>Home State (for CGST/SGST)</label>
+                <select id="gst-state">
+                  <option value="Rajasthan" selected>Rajasthan</option>
+                  <option value="Gujarat">Gujarat</option>
+                  <option value="Maharashtra">Maharashtra</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Uttar Pradesh">Uttar Pradesh</option>
+                </select>
+              </div>
+              <div class="settings-field">
+                <label>Default GST Rate</label>
+                <select id="gst-rate">
+                  <option value="18" selected>18%</option>
+                  <option value="12">12%</option>
+                  <option value="5">5%</option>
+                  <option value="0">0% (Exempt)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="settings-footer">
+            <button class="btn-outline">Reset</button>
+            <button class="btn-primary" onclick="saveSettings()">Save Changes</button>
+          </div>
+        </div>
+
+        <!-- Bank Details -->
+        <div class="settings-section" id="section-bank">
+          <div class="settings-section-header">
+            <h3>🏦 Bank Account Details</h3>
+            <p>Printed on invoices for UPI / bank transfer payments</p>
+          </div>
+          <div class="settings-field-group">
+            <div class="settings-field">
+              <label>Bank Name</label>
+              <input type="text" id="bank-name" value="" placeholder="e.g. HDFC Bank">
+            </div>
+            <div class="settings-field-row">
+              <div class="settings-field">
+                <label>Account Number</label>
+                <input type="text" id="bank-acc" value="" placeholder="0000 0000 0000 0000">
+              </div>
+              <div class="settings-field">
+                <label>IFSC Code</label>
+                <input type="text" id="bank-ifsc" value="" placeholder="HDFC0001234">
+              </div>
+            </div>
+            <div class="settings-field-row">
+              <div class="settings-field">
+                <label>Account Holder Name</label>
+                <input type="text" id="bank-holder" value="ALOK BAGS" placeholder="As per bank records">
+              </div>
+              <div class="settings-field">
+                <label>UPI ID</label>
+                <input type="text" id="bank-upi" value="" placeholder="alokbags@upi">
+              </div>
+            </div>
+          </div>
+          <div class="settings-footer">
+            <button class="btn-outline">Reset</button>
+            <button class="btn-primary" onclick="saveSettings()">Save Changes</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    function showSection(name) {
+      document.querySelectorAll('.settings-sidebar-item').forEach(el => el.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      // All sections visible; just scroll to the chosen one
+      const el = document.getElementById('section-' + name);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+
+    function saveSettings() {
+      const settings = {
+        biz_name: document.getElementById('biz-name').value,
+        biz_owner: document.getElementById('biz-owner').value,
+        biz_mobile: document.getElementById('biz-mobile').value,
+        biz_email: document.getElementById('biz-email').value,
+        biz_city: document.getElementById('biz-city').value,
+        biz_state: document.getElementById('biz-state').value,
+        biz_address: document.getElementById('biz-address').value,
+        inv_prefix: document.getElementById('inv-prefix').value,
+        inv_start: document.getElementById('inv-start').value,
+        inv_terms: document.getElementById('inv-terms').value,
+        inv_footer: document.getElementById('inv-footer').value,
+        gst_gstin: document.getElementById('gst-gstin').value,
+        gst_pan: document.getElementById('gst-pan').value,
+        gst_state: document.getElementById('gst-state').value,
+        gst_rate: document.getElementById('gst-rate').value,
+        bank_name: document.getElementById('bank-name').value,
+        bank_acc: document.getElementById('bank-acc').value,
+        bank_ifsc: document.getElementById('bank-ifsc').value,
+        bank_holder: document.getElementById('bank-holder').value,
+        bank_upi: document.getElementById('bank-upi').value,
+      };
+      localStorage.setItem('alok_bags_settings', JSON.stringify(settings));
+      showToast('✅ Settings saved successfully!');
+    }
+
+    function loadSettings() {
+      try {
+        const saved = JSON.parse(localStorage.getItem('alok_bags_settings') || '{}');
+        Object.keys(saved).forEach(key => {
+          const el = document.getElementById(key.replace(/_/g, '-'));
+          if (el && saved[key]) el.value = saved[key];
+        });
+      } catch(e) {}
+    }
+
+    loadSettings();
+  </script>
+</body>
+</html>

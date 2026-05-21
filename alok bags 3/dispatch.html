@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALOK BAGS — Dispatch</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-header h1{font-size:22px;font-weight:700;color:#1a1a1a}
+    .page-header p{font-size:13px;color:#888;margin-top:2px}
+    .btn-primary{background:#E05A20;color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary:hover{background:#c84e18}
+    .btn-outline{background:#fff;color:#555;border:1px solid #ddd;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer}
+    .btn-outline:hover{border-color:#E05A20;color:#E05A20}
+    .btn-sm{padding:5px 10px;font-size:11px;border-radius:6px}
+    .btn-danger{background:#fff;color:#c62828;border:1px solid #fcc;padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer}
+    .btn-danger:hover{background:#fce4ec}
+    .btn-status{background:#e8f0fe;color:#1a73e8;border:1px solid #c5d7fb;padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer}
+    .filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+    .filter-bar select{border:1px solid #e0e0e0;border-radius:7px;padding:7px 10px;font-size:12px;outline:none;color:#444}
+    .table-wrap{background:#fff;border-radius:12px;border:0.5px solid #e0ddd8;overflow:hidden}
+    table{width:100%;border-collapse:collapse}
+    th{background:#f9f9f9;font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.4px;padding:10px 14px;text-align:left;border-bottom:1px solid #f0f0f0}
+    td{padding:11px 14px;font-size:13px;color:#444;border-bottom:1px solid #fafafa;vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#fafafa}
+    .status-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+    .s-pending{background:#fff3e0;color:#e65100}
+    .s-dispatched{background:#e8f0fe;color:#1a73e8}
+    .s-in_transit{background:#e0f2f1;color:#009688}
+    .s-delivered{background:#e6f4ea;color:#1e7e34}
+    .s-returned{background:#fce4ec;color:#c62828}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none}
+    .modal-overlay.open{display:block}
+    .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:14px;width:580px;max-width:95vw;max-height:90vh;overflow-y:auto;z-index:201;display:none}
+    .modal.open{display:block}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid #f0f0f0}
+    .modal-head h3{font-size:16px;font-weight:700;color:#222}
+    .modal-close{background:none;border:none;cursor:pointer;color:#888;font-size:20px}
+    .modal-body{padding:22px}
+    .modal-foot{padding:14px 22px;border-top:1px solid #f0f0f0;display:flex;justify-content:flex-end;gap:10px;background:#fafafa;border-radius:0 0 14px 14px}
+    .field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+    .field label{font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.3px}
+    .field input,.field select,.field textarea{border:1px solid #e0e0e0;border-radius:8px;padding:9px 11px;font-size:13px;color:#333;outline:none;width:100%;transition:border-color .2s}
+    .field input:focus,.field select:focus{border-color:#E05A20;box-shadow:0 0 0 3px rgba(224,90,32,.08)}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+    .toast{position:fixed;bottom:24px;right:24px;background:#333;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:999}
+    .toast.show{opacity:1}
+    .empty-state{text-align:center;padding:48px;color:#aaa;font-size:14px}
+    /* Status quick-update modal */
+    .status-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+    .status-option{border:2px solid #e0e0e0;border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:border-color .15s}
+    .status-option:hover{border-color:#1a73e8}
+    .status-option.sel{border-color:#1a73e8;background:#e8f0fe}
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="top-nav__left">
+      <a href="index.html" class="logo-box">AB</a>
+      <a href="index.html" class="brand-name">ALOK BAGS</a>
+    </div>
+    <ul class="top-nav__links">
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="manufacturing.html" class="active">Manufacturing</a></li>
+      <li><a href="sales.html">Accounts</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="top-nav__user"><div class="avatar-chip">AD</div><span class="user-name">Admin</span></div>
+  </nav>
+  <nav class="sub-nav">
+    <ul>
+      <li><a href="index.html">Overview</a></li>
+      <li><a href="sales.html">Sales</a></li>
+      <li><a href="purchases.html">Purchase</a></li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="production.html">Production</a></li>
+      <li><a href="inventory.html">Inventory</a></li>
+      <li><a href="dispatch.html" class="active">Dispatch</a></li>
+      <li><a href="ledger.html">Ledger</a></li>
+      <li><a href="gst.html">GST / Tax</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>🚚 Dispatch Management</h1>
+        <p>Track outgoing shipments, LR numbers and delivery status</p>
+      </div>
+      <button class="btn-primary" onclick="openModal()">+ New Dispatch</button>
+    </div>
+
+    <section class="stats-row" style="margin-bottom:20px">
+      <div class="stat-card"><span class="stat-label">Total Dispatches</span><span class="stat-value" id="st-total">0</span></div>
+      <div class="stat-card"><span class="stat-label">Pending</span><span class="stat-value" id="st-pending" style="color:#e65100">0</span></div>
+      <div class="stat-card"><span class="stat-label">In Transit</span><span class="stat-value" id="st-transit" style="color:#009688">0</span></div>
+      <div class="stat-card"><span class="stat-label">Delivered</span><span class="stat-value" id="st-delivered" style="color:#1e7e34">0</span></div>
+    </section>
+
+    <div class="filter-bar">
+      <select id="f-status" onchange="loadDispatches()">
+        <option value="all">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="dispatched">Dispatched</option>
+        <option value="in_transit">In Transit</option>
+        <option value="delivered">Delivered</option>
+        <option value="returned">Returned</option>
+      </select>
+      <button class="btn-outline" onclick="loadDispatches()">🔄 Refresh</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Dispatch No.</th><th>Date</th><th>Party</th><th>Invoice</th>
+            <th>Transporter</th><th>LR No.</th><th>Vehicle</th>
+            <th class="col-amt">Items</th><th>Status</th><th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="dsp-tbody">
+          <tr><td colspan="10" class="empty-state">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Add/Edit Dispatch Modal -->
+  <div class="modal-overlay" id="overlay" onclick="closeModal()"></div>
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">New Dispatch Entry</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="dsp-id">
+      <div class="field-row">
+        <div class="field">
+          <label>Party / Customer *</label>
+          <select id="dsp-party"><option value="">-- Select Party --</option></select>
+        </div>
+        <div class="field">
+          <label>Link to Invoice</label>
+          <select id="dsp-invoice"><option value="">-- None --</option></select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Dispatch Date *</label><input type="date" id="dsp-date"></div>
+        <div class="field">
+          <label>Status</label>
+          <select id="dsp-status">
+            <option value="pending">Pending</option>
+            <option value="dispatched" selected>Dispatched</option>
+            <option value="in_transit">In Transit</option>
+            <option value="delivered">Delivered</option>
+            <option value="returned">Returned</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Transporter Name</label><input type="text" id="dsp-transporter" placeholder="e.g. Maruti Transport"></div>
+        <div class="field"><label>LR Number</label><input type="text" id="dsp-lr" placeholder="e.g. LR-12345"></div>
+      </div>
+      <div class="field-row3">
+        <div class="field"><label>Vehicle No.</label><input type="text" id="dsp-vehicle" placeholder="RJ14XX1234"></div>
+        <div class="field"><label>No. of Items</label><input type="number" id="dsp-items" min="0" step="1" placeholder="0"></div>
+        <div class="field"><label>Total Weight (kg)</label><input type="number" id="dsp-weight" min="0" step="0.1" placeholder="0.0"></div>
+      </div>
+      <div class="field"><label>Notes / Remarks</label><textarea id="dsp-notes" rows="2" placeholder="Any special instructions or notes..."></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveDispatch()">💾 Save Dispatch</button>
+    </div>
+  </div>
+
+  <!-- Status Update Modal -->
+  <div class="modal-overlay" id="status-overlay" onclick="closeStatusModal()"></div>
+  <div class="modal" id="status-modal" style="width:380px">
+    <div class="modal-head">
+      <h3>Update Delivery Status</h3>
+      <button class="modal-close" onclick="closeStatusModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="status-dsp-id">
+      <p style="font-size:13px;color:#666;margin-bottom:12px">Select new status for <strong id="status-dsp-no"></strong></p>
+      <div class="status-grid">
+        <div class="status-option" onclick="selectStatus('pending')" id="so-pending"><div style="font-size:20px">⏳</div><div style="font-size:12px;font-weight:600;color:#e65100;margin-top:4px">Pending</div></div>
+        <div class="status-option" onclick="selectStatus('dispatched')" id="so-dispatched"><div style="font-size:20px">📦</div><div style="font-size:12px;font-weight:600;color:#1a73e8;margin-top:4px">Dispatched</div></div>
+        <div class="status-option" onclick="selectStatus('in_transit')" id="so-in_transit"><div style="font-size:20px">🚚</div><div style="font-size:12px;font-weight:600;color:#009688;margin-top:4px">In Transit</div></div>
+        <div class="status-option" onclick="selectStatus('delivered')" id="so-delivered"><div style="font-size:20px">✅</div><div style="font-size:12px;font-weight:600;color:#1e7e34;margin-top:4px">Delivered</div></div>
+        <div class="status-option" onclick="selectStatus('returned')" id="so-returned"><div style="font-size:20px">↩️</div><div style="font-size:12px;font-weight:600;color:#c62828;margin-top:4px">Returned</div></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-outline" onclick="closeStatusModal()">Cancel</button>
+      <button class="btn-primary" onclick="applyStatus()">✅ Update Status</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script>
+    const API = 'api';
+    let parties = [], invoices = [], selectedStatus = '';
+
+    function toast(msg, ok=true) {
+      const t = document.getElementById('toast');
+      t.textContent = msg; t.style.background = ok ? '#333' : '#c62828';
+      t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    const statusMap = {
+      pending:{cls:'s-pending',label:'Pending'}, dispatched:{cls:'s-dispatched',label:'Dispatched'},
+      in_transit:{cls:'s-in_transit',label:'In Transit'}, delivered:{cls:'s-delivered',label:'Delivered'},
+      returned:{cls:'s-returned',label:'Returned'}
+    };
+
+    function statusBadge(s) {
+      const m = statusMap[s] || {cls:'s-pending',label:s};
+      return `<span class="status-badge ${m.cls}">${m.label}</span>`;
+    }
+
+    function fDate(d) { return d ? new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—'; }
+
+    async function init() {
+      const [pr, ir] = await Promise.all([fetch(`${API}/parties.php`), fetch(`${API}/invoices.php`)]);
+      parties = pr.ok ? await pr.json() : [];
+      invoices = ir.ok ? await ir.json() : [];
+
+      const pSel = document.getElementById('dsp-party');
+      pSel.innerHTML = '<option value="">-- Select Party --</option>' +
+        parties.map(p => `<option value="${p.id}">${p.name} (${p.type})</option>`).join('');
+
+      await loadDispatches();
+    }
+
+    function populateInvoiceDropdown(partyId) {
+      const sel = document.getElementById('dsp-invoice');
+      const filtered = partyId ? invoices.filter(i => i.party_id == partyId) : invoices;
+      sel.innerHTML = '<option value="">-- None --</option>' +
+        filtered.map(i => `<option value="${i.id}">${i.invoice_no} — ₹${parseFloat(i.total).toFixed(0)}</option>`).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('dsp-party').addEventListener('change', function() {
+        populateInvoiceDropdown(this.value);
+      });
+    });
+
+    async function loadDispatches() {
+      const status = document.getElementById('f-status').value;
+      const r = await fetch(`${API}/dispatch.php?status=${status}`);
+      const list = r.ok ? await r.json() : [];
+
+      let pending=0, transit=0, delivered=0;
+      list.forEach(d => {
+        if(d.status==='pending') pending++;
+        else if(d.status==='in_transit') transit++;
+        else if(d.status==='delivered') delivered++;
+      });
+      document.getElementById('st-total').textContent = list.length;
+      document.getElementById('st-pending').textContent = pending;
+      document.getElementById('st-transit').textContent = transit;
+      document.getElementById('st-delivered').textContent = delivered;
+
+      const tbody = document.getElementById('dsp-tbody');
+      if (!list.length) { tbody.innerHTML = '<tr><td colspan="10" class="empty-state">No dispatches found. Click "+ New Dispatch" to add one.</td></tr>'; return; }
+      tbody.innerHTML = list.map(d => `<tr>
+        <td><strong>${d.dispatch_no}</strong></td>
+        <td>${fDate(d.dispatch_date)}</td>
+        <td style="font-weight:500">${d.party_name || '—'}</td>
+        <td style="color:#1a73e8">${d.invoice_no || '—'}</td>
+        <td>${d.transporter || '—'}</td>
+        <td>${d.lr_no || '—'}</td>
+        <td>${d.vehicle_no || '—'}</td>
+        <td style="text-align:right">${d.items_count || 0}</td>
+        <td>${statusBadge(d.status)}</td>
+        <td style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="btn-status btn-sm" onclick="openStatusModal(${d.id},'${d.dispatch_no}','${d.status}')">Status</button>
+          <button class="btn-outline btn-sm" onclick="editDispatch(${d.id})">Edit</button>
+          <button class="btn-danger btn-sm" onclick="deleteDispatch(${d.id},'${d.dispatch_no}')">Del</button>
+        </td>
+      </tr>`).join('');
+    }
+
+    function openModal(dsp=null) {
+      document.getElementById('modal-title').textContent = dsp ? `Edit — ${dsp.dispatch_no}` : 'New Dispatch Entry';
+      document.getElementById('dsp-id').value = dsp?.id || '';
+      document.getElementById('dsp-party').value = dsp?.party_id || '';
+      document.getElementById('dsp-date').value = dsp?.dispatch_date || new Date().toISOString().split('T')[0];
+      document.getElementById('dsp-status').value = dsp?.status || 'dispatched';
+      document.getElementById('dsp-transporter').value = dsp?.transporter || '';
+      document.getElementById('dsp-lr').value = dsp?.lr_no || '';
+      document.getElementById('dsp-vehicle').value = dsp?.vehicle_no || '';
+      document.getElementById('dsp-items').value = dsp?.items_count || '';
+      document.getElementById('dsp-weight').value = dsp?.total_weight || '';
+      document.getElementById('dsp-notes').value = dsp?.notes || '';
+      populateInvoiceDropdown(dsp?.party_id || '');
+      if (dsp?.invoice_id) document.getElementById('dsp-invoice').value = dsp.invoice_id;
+      document.getElementById('overlay').classList.add('open');
+      document.getElementById('modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('overlay').classList.remove('open');
+      document.getElementById('modal').classList.remove('open');
+    }
+
+    async function editDispatch(id) {
+      const r = await fetch(`${API}/dispatch.php?id=${id}`);
+      if (r.ok) openModal(await r.json());
+    }
+
+    async function saveDispatch() {
+      const id = document.getElementById('dsp-id').value;
+      const partyId = document.getElementById('dsp-party').value;
+      if (!partyId) { toast('Select a party', false); return; }
+      const payload = {
+        party_id: parseInt(partyId),
+        invoice_id: document.getElementById('dsp-invoice').value || null,
+        dispatch_date: document.getElementById('dsp-date').value,
+        status: document.getElementById('dsp-status').value,
+        transporter: document.getElementById('dsp-transporter').value,
+        lr_no: document.getElementById('dsp-lr').value,
+        vehicle_no: document.getElementById('dsp-vehicle').value,
+        items_count: parseInt(document.getElementById('dsp-items').value) || 0,
+        total_weight: parseFloat(document.getElementById('dsp-weight').value) || 0,
+        notes: document.getElementById('dsp-notes').value
+      };
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `${API}/dispatch.php?id=${id}` : `${API}/dispatch.php`;
+      const r = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const data = await r.json();
+      if (r.ok) { toast(id ? '✅ Dispatch updated' : `✅ ${data.dispatch_no} created`); closeModal(); loadDispatches(); }
+      else toast('Error: ' + (data.error||'Failed'), false);
+    }
+
+    async function deleteDispatch(id, no) {
+      if (!confirm(`Delete dispatch ${no}?`)) return;
+      const r = await fetch(`${API}/dispatch.php?id=${id}`, { method: 'DELETE' });
+      if (r.ok) { toast('🗑️ Dispatch deleted'); loadDispatches(); }
+      else toast('Error deleting', false);
+    }
+
+    // Status modal
+    function openStatusModal(id, no, currentStatus) {
+      document.getElementById('status-dsp-id').value = id;
+      document.getElementById('status-dsp-no').textContent = no;
+      selectStatus(currentStatus);
+      document.getElementById('status-overlay').classList.add('open');
+      document.getElementById('status-modal').classList.add('open');
+    }
+
+    function closeStatusModal() {
+      document.getElementById('status-overlay').classList.remove('open');
+      document.getElementById('status-modal').classList.remove('open');
+    }
+
+    function selectStatus(s) {
+      selectedStatus = s;
+      ['pending','dispatched','in_transit','delivered','returned'].forEach(x => {
+        document.getElementById('so-' + x).classList.toggle('sel', x === s);
+      });
+    }
+
+    async function applyStatus() {
+      const id = document.getElementById('status-dsp-id').value;
+      if (!selectedStatus) { toast('Select a status', false); return; }
+      const r = await fetch(`${API}/dispatch.php?id=${id}`, {
+        method: 'PUT', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ status: selectedStatus })
+      });
+      if (r.ok) { toast(`✅ Status updated to ${statusMap[selectedStatus]?.label}`); closeStatusModal(); loadDispatches(); }
+      else toast('Error updating status', false);
+    }
+
+    init();
+  </script>
+</body>
+</html>

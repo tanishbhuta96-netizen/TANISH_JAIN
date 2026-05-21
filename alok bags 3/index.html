@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="alok bags account-management system">
+  <title>ALOK BAGS — Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ═══════════ TOP NAVBAR ═══════════ -->
+  <nav class="top-nav" id="top-nav">
+    <div class="top-nav__left">
+      <div class="logo-box" id="logo-box">AB</div>
+      <span class="brand-name">ALOK BAGS</span>
+    </div>
+
+    <ul class="top-nav__links" id="main-nav-links">
+      <li><a href="index.html" class="active" id="nav-dashboard">Dashboard</a></li>
+      <li><a href="manufacturing.html" id="nav-manufacturing">Manufacturing</a></li>
+      <li><a href="sales.html" id="nav-accounts">Accounts</a></li>
+      <li><a href="reports.html" id="nav-reports">Reports</a></li>
+      <li><a href="settings.html" id="nav-settings">Settings</a></li>
+    </ul>
+
+    <div class="top-nav__user" id="user-chip">
+      <div class="avatar-chip">AD</div>
+      <span class="user-name">Admin</span>
+    </div>
+  </nav>
+
+  <!-- ═══════════ SUB NAVBAR ═══════════ -->
+  <nav class="sub-nav" id="sub-nav">
+    <ul>
+      <li><a href="index.html" class="active" id="sub-overview">Overview</a></li>
+      <li><a href="sales.html" id="sub-sales">Sales</a></li>
+      <li><a href="purchases.html" id="sub-purchase">Purchase</a></li>
+      <li><a href="payments.html" id="sub-payments">Payments</a></li>
+      <li><a href="#" id="sub-production">Production</a></li>
+      <li><a href="#" id="sub-inventory">Inventory</a></li>
+      <li><a href="#" id="sub-dispatch">Dispatch</a></li>
+      <li><a href="ledger.html" id="sub-ledger">Ledger</a></li>
+      <li><a href="#" id="sub-gst">GST / Tax</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══════════ MAIN CONTENT ═══════════ -->
+  <main class="main-content">
+
+    <!-- ── STATS ROW ── -->
+    <section class="stats-row" id="stats-row">
+      <div class="stat-card" id="stat-orders">
+        <span class="stat-label">Orders this month</span>
+        <span class="stat-value">142</span>
+        <span class="stat-badge badge-green">+12% vs last month</span>
+      </div>
+      <div class="stat-card" id="stat-revenue">
+        <span class="stat-label">Revenue (INR)</span>
+        <span class="stat-value">₹8.4L</span>
+        <span class="stat-badge badge-green">+7%</span>
+      </div>
+      <div class="stat-card" id="stat-pending">
+        <span class="stat-label">Pending payments</span>
+        <span class="stat-value">₹1.2L</span>
+        <span class="stat-badge badge-red">3 overdue</span>
+      </div>
+      <div class="stat-card" id="stat-dispatch">
+        <span class="stat-label">Units dispatched</span>
+        <span class="stat-value">3,840</span>
+        <span class="stat-badge badge-green">On track</span>
+      </div>
+    </section>
+
+    <!-- ── ACCOUNT MANAGEMENT ── -->
+    <section class="module-section" id="account-management">
+      <h2 class="section-label">Account Management</h2>
+      <div class="tile-grid">
+
+        <a href="ledger.html" class="tile" id="tile-ledger">
+          <div class="tile__icon" style="background:#e8f0fe;color:#1a73e8;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+              <line x1="8" y1="7" x2="16" y2="7" />
+              <line x1="8" y1="11" x2="14" y2="11" />
+            </svg>
+          </div>
+          <span class="tile__name">Ledger</span>
+          <span class="tile__sub">Party accounts</span>
+        </a>
+
+        <a href="sales.html" class="tile" id="tile-sales">
+          <div class="tile__icon" style="background:#fce8e0;color:#E05A20;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              <polyline points="17 6 23 6 23 12" />
+            </svg>
+          </div>
+          <span class="tile__name">Sales & Billing</span>
+          <span class="tile__sub">Invoices & orders</span>
+        </a>
+
+        <a href="purchases.html" class="tile" id="tile-purchase">
+          <div class="tile__icon" style="background:#e6f4ea;color:#1e8e3e;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="9" cy="21" r="1" />
+              <circle cx="20" cy="21" r="1" />
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+            </svg>
+          </div>
+          <span class="tile__name">Purchase</span>
+          <span class="tile__sub">Vendor bills</span>
+        </a>
+
+        <a href="payments.html" class="tile" id="tile-payments">
+          <div class="tile__icon" style="background:#fef3e0;color:#e8a317;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+              <line x1="1" y1="10" x2="23" y2="10" />
+            </svg>
+          </div>
+          <span class="tile__name">Payments</span>
+          <span class="tile__sub">In & out</span>
+        </a>
+
+        <a href="#" class="tile" id="tile-gst">
+          <div class="tile__icon" style="background:#e0f2f1;color:#009688;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="9" y1="13" x2="15" y2="13" />
+              <line x1="9" y1="17" x2="15" y2="17" />
+            </svg>
+          </div>
+          <span class="tile__name">GST / Tax</span>
+          <span class="tile__sub">Returns & filing</span>
+        </a>
+
+        <a href="#" class="tile" id="tile-expenses">
+          <div class="tile__icon" style="background:#fce4ec;color:#d32f2f;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="1" x2="12" y2="23" />
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+          </div>
+          <span class="tile__name">Expenses</span>
+          <span class="tile__sub">Overhead costs</span>
+        </a>
+
+        <a href="#" class="tile" id="tile-reports">
+          <div class="tile__icon" style="background:#ede7f6;color:#7c4dff;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+          </div>
+          <span class="tile__name">Reports</span>
+          <span class="tile__sub">P&L, Balance sheet</span>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ── MANUFACTURING MANAGEMENT ── -->
+    <section class="module-section" id="manufacturing-management">
+      <h2 class="section-label">Manufacturing Management</h2>
+      <div class="tile-grid">
+
+        <a href="#" class="tile" id="tile-order">
+          <div class="tile__icon" style="background:#fce8e0;color:#E05A20;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+              <line x1="9" y1="12" x2="15" y2="12" />
+              <line x1="9" y1="16" x2="13" y2="16" />
+            </svg>
+          </div>
+          <span class="tile__name">Order</span>
+          <span class="tile__sub">Work orders</span>
+        </a>
+
+        <a href="#" class="tile" id="tile-production">
+          <div class="tile__icon" style="background:#e6f4ea;color:#1e8e3e;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+          </div>
+          <span class="tile__name">Production</span>
+          <span class="tile__sub">Job tracking</span>
+        </a>
+
+        <a href="#" class="tile" id="tile-raw-material">
+          <div class="tile__icon" style="background:#fef3e0;color:#e8a317;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+              <line x1="12" y1="22.08" x2="12" y2="12" />
+            </svg>
+          </div>
+          <span class="tile__name">Raw Material</span>
+          <span class="tile__sub">Stock & BOM</span>
+        </a>
+
+        <a href="#" class="tile" id="tile-quality">
+          <div class="tile__icon" style="background:#e0f2f1;color:#009688;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+          </div>
+          <span class="tile__name">Quality</span>
+          <span class="tile__sub">Inspection & QC</span>
+        </a>
+
+        <a href="#" class="tile" id="tile-dispatch">
+          <div class="tile__icon" style="background:#e8f0fe;color:#1a73e8;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13" />
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+              <circle cx="5.5" cy="18.5" r="2.5" />
+              <circle cx="18.5" cy="18.5" r="2.5" />
+            </svg>
+          </div>
+          <span class="tile__name">Dispatch</span>
+          <span class="tile__sub">Material dispatch</span>
+        </a>
+
+        <a href="#" class="tile" id="tile-returns">
+          <div class="tile__icon" style="background:#fce4ec;color:#d32f2f;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="1 4 1 10 7 10" />
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+            </svg>
+          </div>
+          <span class="tile__name">Returns</span>
+          <span class="tile__sub">Rejections</span>
+        </a>
+
+        <a href="#" class="tile" id="tile-complaint">
+          <div class="tile__icon" style="background:#ede7f6;color:#7c4dff;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+          </div>
+          <span class="tile__name">Complaint</span>
+          <span class="tile__sub">Customer issues</span>
+        </a>
+
+        <a href="#" class="tile" id="tile-whatsapp">
+          <div class="tile__icon" style="background:#e6f4ea;color:#25d366;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+              <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.981.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z" />
+            </svg>
+          </div>
+          <span class="tile__name">WhatsApp</span>
+          <span class="tile__sub">Alerts & notify</span>
+        </a>
+
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

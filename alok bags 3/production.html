@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ALOK BAGS — Production</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+    .page-header h1{font-size:22px;font-weight:700;color:#1a1a1a}
+    .page-header p{font-size:13px;color:#888;margin-top:2px}
+    .btn-primary{background:#E05A20;color:#fff;border:none;padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+    .btn-primary:hover{background:#c84e18}
+    .btn-outline{background:#fff;color:#555;border:1px solid #ddd;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer}
+    .btn-outline:hover{border-color:#E05A20;color:#E05A20}
+    .btn-sm{padding:5px 10px;font-size:11px;border-radius:6px}
+    .btn-danger{background:#fff;color:#c62828;border:1px solid #fcc;padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer}
+    .btn-danger:hover{background:#fce4ec}
+    .filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap}
+    .filter-bar select,.filter-bar input{border:1px solid #e0e0e0;border-radius:7px;padding:7px 10px;font-size:12px;outline:none;color:#444}
+    .table-wrap{background:#fff;border-radius:12px;border:0.5px solid #e0ddd8;overflow:hidden}
+    table{width:100%;border-collapse:collapse}
+    th{background:#f9f9f9;font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.4px;padding:10px 14px;text-align:left;border-bottom:1px solid #f0f0f0}
+    td{padding:11px 14px;font-size:13px;color:#444;border-bottom:1px solid #fafafa;vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#fafafa}
+    .col-amt{text-align:right}
+    .status-badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+    .s-pending{background:#fff3e0;color:#e65100}
+    .s-in_progress{background:#e8f0fe;color:#1a73e8}
+    .s-completed{background:#e6f4ea;color:#1e7e34}
+    .s-cancelled{background:#fce4ec;color:#c62828}
+    /* Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none}
+    .modal-overlay.open{display:block}
+    .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:14px;padding:0;width:560px;max-width:95vw;max-height:90vh;overflow-y:auto;z-index:201;display:none}
+    .modal.open{display:block}
+    .modal-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid #f0f0f0}
+    .modal-head h3{font-size:16px;font-weight:700;color:#222}
+    .modal-close{background:none;border:none;cursor:pointer;color:#888;font-size:20px;line-height:1}
+    .modal-body{padding:22px}
+    .modal-foot{padding:14px 22px;border-top:1px solid #f0f0f0;display:flex;justify-content:flex-end;gap:10px;background:#fafafa;border-radius:0 0 14px 14px}
+    .field{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+    .field label{font-size:11px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.3px}
+    .field input,.field select,.field textarea{border:1px solid #e0e0e0;border-radius:8px;padding:9px 11px;font-size:13px;color:#333;outline:none;width:100%;transition:border-color .2s}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:#E05A20;box-shadow:0 0 0 3px rgba(224,90,32,.08)}
+    .field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+    .progress-bar{height:6px;background:#f0f0f0;border-radius:4px;overflow:hidden;margin-top:4px}
+    .progress-fill{height:100%;background:#1a73e8;border-radius:4px;transition:width .3s}
+    .toast{position:fixed;bottom:24px;right:24px;background:#333;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:999}
+    .toast.show{opacity:1}
+    .empty-state{text-align:center;padding:48px;color:#aaa;font-size:14px}
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <div class="top-nav__left">
+      <a href="index.html" class="logo-box">AB</a>
+      <a href="index.html" class="brand-name">ALOK BAGS</a>
+    </div>
+    <ul class="top-nav__links">
+      <li><a href="index.html">Dashboard</a></li>
+      <li><a href="manufacturing.html" class="active">Manufacturing</a></li>
+      <li><a href="sales.html">Accounts</a></li>
+      <li><a href="reports.html">Reports</a></li>
+      <li><a href="settings.html">Settings</a></li>
+    </ul>
+    <div class="top-nav__user"><div class="avatar-chip">AD</div><span class="user-name">Admin</span></div>
+  </nav>
+  <nav class="sub-nav">
+    <ul>
+      <li><a href="index.html">Overview</a></li>
+      <li><a href="sales.html">Sales</a></li>
+      <li><a href="purchases.html">Purchase</a></li>
+      <li><a href="payments.html">Payments</a></li>
+      <li><a href="production.html" class="active">Production</a></li>
+      <li><a href="inventory.html">Inventory</a></li>
+      <li><a href="dispatch.html">Dispatch</a></li>
+      <li><a href="ledger.html">Ledger</a></li>
+      <li><a href="gst.html">GST / Tax</a></li>
+    </ul>
+  </nav>
+
+  <main class="main-content">
+    <div class="page-header">
+      <div>
+        <h1>⚙️ Production Management</h1>
+        <p>Create and track job cards, batch output, and quality</p>
+      </div>
+      <button class="btn-primary" onclick="openModal()">+ New Job Card</button>
+    </div>
+
+    <section class="stats-row" style="margin-bottom:20px">
+      <div class="stat-card"><span class="stat-label">Total Jobs</span><span class="stat-value" id="st-total">0</span></div>
+      <div class="stat-card"><span class="stat-label">Pending</span><span class="stat-value" id="st-pending" style="color:#e65100">0</span></div>
+      <div class="stat-card"><span class="stat-label">In Progress</span><span class="stat-value" id="st-progress" style="color:#1a73e8">0</span></div>
+      <div class="stat-card"><span class="stat-label">Completed</span><span class="stat-value" id="st-done" style="color:#1e7e34">0</span></div>
+    </section>
+
+    <div class="filter-bar">
+      <select id="f-status" onchange="loadJobs()">
+        <option value="all">All Status</option>
+        <option value="pending">Pending</option>
+        <option value="in_progress">In Progress</option>
+        <option value="completed">Completed</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+      <button class="btn-outline" onclick="loadJobs()">🔄 Refresh</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Job No.</th>
+            <th>Product / Description</th>
+            <th>Worker</th>
+            <th>Start Date</th>
+            <th class="col-amt">Target</th>
+            <th class="col-amt">Produced</th>
+            <th class="col-amt">Rejected</th>
+            <th>Progress</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="job-tbody">
+          <tr><td colspan="10" class="empty-state">Loading...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="overlay" onclick="closeModal()"></div>
+  <div class="modal" id="modal">
+    <div class="modal-head">
+      <h3 id="modal-title">New Job Card</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="job-id">
+      <div class="field">
+        <label>Product</label>
+        <select id="job-product"><option value="">-- Select Product (optional) --</option></select>
+      </div>
+      <div class="field">
+        <label>Description / Job Title *</label>
+        <input type="text" id="job-desc" placeholder="e.g. D-Cut Bag Production Batch #12">
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Worker / Team</label>
+          <input type="text" id="job-worker" placeholder="Worker name or team">
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select id="job-status">
+            <option value="pending">Pending</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Start Date</label>
+          <input type="date" id="job-start">
+        </div>
+        <div class="field">
+          <label>End Date (Expected)</label>
+          <input type="date" id="job-end">
+        </div>
+      </div>
+      <div class="field-row3">
+        <div class="field">
+          <label>Target Qty</label>
+          <input type="number" id="job-target" min="0" step="1" placeholder="0">
+        </div>
+        <div class="field">
+          <label>Actual Produced</label>
+          <input type="number" id="job-actual" min="0" step="1" placeholder="0">
+        </div>
+        <div class="field">
+          <label>Rejected Qty</label>
+          <input type="number" id="job-rejected" min="0" step="1" placeholder="0">
+        </div>
+      </div>
+      <div class="field">
+        <label>Notes</label>
+        <textarea id="job-notes" rows="2" placeholder="Any notes..."></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveJob()">💾 Save Job Card</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API = 'api';
+    let products = [];
+
+    function toast(msg, ok=true) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.background = ok ? '#333' : '#c62828';
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function statusBadge(s) {
+      const map = {pending:'s-pending',in_progress:'s-in_progress',completed:'s-completed',cancelled:'s-cancelled'};
+      const labels = {pending:'Pending',in_progress:'In Progress',completed:'Completed',cancelled:'Cancelled'};
+      return `<span class="status-badge ${map[s]||'s-pending'}">${labels[s]||s}</span>`;
+    }
+
+    function fDate(d) { return d ? new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—'; }
+
+    async function loadProducts() {
+      const r = await fetch(`${API}/products.php`);
+      products = r.ok ? await r.json() : [];
+      const sel = document.getElementById('job-product');
+      sel.innerHTML = '<option value="">-- Select Product (optional) --</option>' +
+        products.map(p => `<option value="${p.id}">${p.name} (${p.unit})</option>`).join('');
+    }
+
+    async function loadJobs() {
+      const status = document.getElementById('f-status').value;
+      const r = await fetch(`${API}/production.php?status=${status}`);
+      const jobs = r.ok ? await r.json() : [];
+
+      let pending=0, inprog=0, done=0;
+      jobs.forEach(j => {
+        if(j.status==='pending') pending++;
+        else if(j.status==='in_progress') inprog++;
+        else if(j.status==='completed') done++;
+      });
+      document.getElementById('st-total').textContent = jobs.length;
+      document.getElementById('st-pending').textContent = pending;
+      document.getElementById('st-progress').textContent = inprog;
+      document.getElementById('st-done').textContent = done;
+
+      const tbody = document.getElementById('job-tbody');
+      if (!jobs.length) { tbody.innerHTML = '<tr><td colspan="10" class="empty-state">No job cards found. Click "+ New Job Card" to add one.</td></tr>'; return; }
+
+      tbody.innerHTML = jobs.map(j => {
+        const pct = j.target_qty > 0 ? Math.min(100, Math.round(j.actual_qty / j.target_qty * 100)) : 0;
+        return `<tr>
+          <td><strong>${j.job_no}</strong></td>
+          <td>${j.product_name || j.description || '—'}<br><small style="color:#aaa">${j.product_name && j.description ? j.description : ''}</small></td>
+          <td>${j.worker || '—'}</td>
+          <td>${fDate(j.start_date)}</td>
+          <td class="col-amt">${j.target_qty}</td>
+          <td class="col-amt" style="color:#1e7e34;font-weight:600">${j.actual_qty}</td>
+          <td class="col-amt" style="color:#c62828">${j.rejected_qty}</td>
+          <td style="min-width:80px"><div style="font-size:11px;color:#666;margin-bottom:3px">${pct}%</div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div></td>
+          <td>${statusBadge(j.status)}</td>
+          <td>
+            <button class="btn-outline btn-sm" onclick="editJob(${j.id})">Edit</button>
+            <button class="btn-danger btn-sm" onclick="deleteJob(${j.id},'${j.job_no}')">Del</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    function openModal(job=null) {
+      document.getElementById('modal-title').textContent = job ? `Edit — ${job.job_no}` : 'New Job Card';
+      document.getElementById('job-id').value = job ? job.id : '';
+      document.getElementById('job-desc').value = job?.description || '';
+      document.getElementById('job-product').value = job?.product_id || '';
+      document.getElementById('job-worker').value = job?.worker || '';
+      document.getElementById('job-status').value = job?.status || 'pending';
+      document.getElementById('job-start').value = job?.start_date || new Date().toISOString().split('T')[0];
+      document.getElementById('job-end').value = job?.end_date || '';
+      document.getElementById('job-target').value = job?.target_qty || '';
+      document.getElementById('job-actual').value = job?.actual_qty || '';
+      document.getElementById('job-rejected').value = job?.rejected_qty || '';
+      document.getElementById('job-notes').value = job?.notes || '';
+      document.getElementById('overlay').classList.add('open');
+      document.getElementById('modal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('overlay').classList.remove('open');
+      document.getElementById('modal').classList.remove('open');
+    }
+
+    async function editJob(id) {
+      const r = await fetch(`${API}/production.php?id=${id}`);
+      if (r.ok) openModal(await r.json());
+    }
+
+    async function saveJob() {
+      const id = document.getElementById('job-id').value;
+      const desc = document.getElementById('job-desc').value.trim();
+      const product = document.getElementById('job-product').value;
+      if (!desc && !product) { toast('Enter a description or select a product', false); return; }
+
+      const payload = {
+        product_id: product || null,
+        description: desc,
+        worker: document.getElementById('job-worker').value,
+        status: document.getElementById('job-status').value,
+        start_date: document.getElementById('job-start').value,
+        end_date: document.getElementById('job-end').value || null,
+        target_qty: parseFloat(document.getElementById('job-target').value) || 0,
+        actual_qty: parseFloat(document.getElementById('job-actual').value) || 0,
+        rejected_qty: parseFloat(document.getElementById('job-rejected').value) || 0,
+        notes: document.getElementById('job-notes').value
+      };
+
+      const method = id ? 'PUT' : 'POST';
+      const url = id ? `${API}/production.php?id=${id}` : `${API}/production.php`;
+      const r = await fetch(url, { method, headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+      const data = await r.json();
+      if (r.ok) { toast(id ? '✅ Job updated' : `✅ Job ${data.job_no} created`); closeModal(); loadJobs(); }
+      else toast('Error: ' + (data.error || 'Failed'), false);
+    }
+
+    async function deleteJob(id, no) {
+      if (!confirm(`Delete job ${no}?`)) return;
+      const r = await fetch(`${API}/production.php?id=${id}`, { method: 'DELETE' });
+      if (r.ok) { toast('🗑️ Job deleted'); loadJobs(); }
+      else toast('Error deleting job', false);
+    }
+
+    loadProducts();
+    loadJobs();
+  </script>
+</body>
+</html>

@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>ALOK BAGS — Invoice</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      color: #000;
+      margin: 0;
+      padding: 0;
+      background: #555;
+    }
+
+    .bill-container {
+      background: #fff;
+      width: 210mm;
+      min-height: 297mm;
+      margin: 20px auto;
+      padding: 10mm;
+      position: relative;
+    }
+
+    @media print {
+      @page {
+        margin: 0;
+      }
+
+      body {
+        background: #fff;
+      }
+
+      .bill-container {
+        margin: 0;
+        padding: 10mm;
+        box-shadow: none;
+        width: 100%;
+        border: none;
+      }
+
+      #print-btn {
+        display: none;
+      }
+    }
+
+    /* GST Template Styles */
+    .main-border {
+      border: 1px solid #000;
+    }
+
+    .header-title {
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 5px;
+      text-decoration: underline;
+    }
+
+    .flex-row {
+      display: flex;
+    }
+
+    .flex-col-50 {
+      width: 50%;
+    }
+
+    .border-bottom {
+      border-bottom: 1px solid #000;
+    }
+
+    .border-right {
+      border-right: 1px solid #000;
+    }
+
+    .border-top {
+      border-top: 1px solid #000;
+    }
+
+    .pad-4 {
+      padding: 4px 6px;
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    /* Table styles */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .items-table th,
+    .items-table td {
+      border-right: 1px solid #000;
+      padding: 4px 6px;
+      vertical-align: top;
+    }
+
+    .items-table th {
+      border-bottom: 1px solid #000;
+      font-weight: normal;
+    }
+
+    .items-table td:last-child,
+    .items-table th:last-child {
+      border-right: none;
+    }
+
+    /* Column widths for GST */
+    .col-sl {
+      width: 4%;
+      text-align: center;
+    }
+
+    .col-desc {
+      width: 36%;
+    }
+
+    .col-hsn {
+      width: 10%;
+      text-align: center;
+    }
+
+    .col-qty {
+      width: 12%;
+      text-align: right;
+    }
+
+    .col-rate {
+      width: 13%;
+      text-align: right;
+    }
+
+    .col-per {
+      width: 5%;
+      text-align: center;
+    }
+
+    .col-gst {
+      width: 5%;
+      text-align: center;
+    }
+
+    .col-amt {
+      width: 15%;
+      text-align: right;
+    }
+
+    .filler-row td {
+      height: 200px;
+      border-bottom: 1px solid #000;
+    }
+
+    #print-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 100;
+    }
+
+    /* Non-GST Template specific styles */
+    .ng-header-table {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .ng-header-table td {
+      vertical-align: top;
+    }
+
+    .ng-col-desc {
+      width: 45%;
+      text-align: left;
+    }
+
+    .ng-col-qty {
+      width: 20%;
+      text-align: center;
+    }
+
+    .ng-col-rate {
+      width: 15%;
+      text-align: center;
+    }
+
+    .ng-col-per {
+      width: 10%;
+      text-align: center;
+    }
+
+    .ng-col-amt {
+      width: 10%;
+      text-align: right;
+    }
+  </style>
+</head>
+
+<body>
+
+  <button id="print-btn" onclick="window.print()">🖨️ Print Invoice</button>
+
+  <!-- ================= GST TEMPLATE ================= -->
+  <div class="bill-container" id="gst-template" style="display: none;">
+    <div class="header-title">INVOICE</div>
+
+    <div class="main-border">
+      <!-- Row 1: Company & Invoice Info -->
+      <div class="flex-row border-bottom">
+        <div class="flex-col-50 border-right pad-4">
+          <div class="bold" style="font-size:14px;">ALOK BAGS</div>
+          <div>Near Bank of Baroda, Chitri</div>
+          <div>Mo. 8107720683, 9460020683</div>
+        </div>
+        <div class="flex-col-50">
+          <div class="flex-row border-bottom">
+            <div class="flex-col-50 border-right pad-4">
+              Invoice No.<br>
+              <div class="bold" id="inv-no">...</div>
+            </div>
+            <div class="flex-col-50 pad-4">
+              Dated<br>
+              <div class="bold" id="inv-date">...</div>
+            </div>
+          </div>
+          <div class="flex-row border-bottom">
+            <div class="flex-col-50 border-right pad-4">Delivery Note<br>&nbsp;</div>
+            <div class="flex-col-50 pad-4">Mode/Terms of Payment<br>&nbsp;</div>
+          </div>
+          <div class="flex-row">
+            <div class="flex-col-50 border-right pad-4">Reference No. & Date.<br>&nbsp;</div>
+            <div class="flex-col-50 pad-4">Other References<br>&nbsp;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Consignee -->
+      <div class="flex-row border-bottom">
+        <div class="flex-col-50 border-right pad-4">
+          Consignee (Ship to)<br>
+          <div class="bold" id="p-name-ship">...</div>
+          <div id="p-billing-ship">...</div>
+        </div>
+        <div class="flex-col-50">
+          <div class="flex-row border-bottom">
+            <div class="flex-col-50 border-right pad-4">Buyer's Order No.<br>&nbsp;</div>
+            <div class="flex-col-50 pad-4">Dated<br>&nbsp;</div>
+          </div>
+          <div class="flex-row">
+            <div class="flex-col-50 border-right pad-4">Dispatch Doc No.<br>&nbsp;</div>
+            <div class="flex-col-50 pad-4">Delivery Note Date<br>&nbsp;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Buyer -->
+      <div class="flex-row border-bottom">
+        <div class="flex-col-50 border-right pad-4">
+          Buyer (Bill to)<br>
+          <div class="bold" id="p-name">...</div>
+          <div id="p-billing">...</div>
+          <div>GSTIN: <span id="p-gstin"></span></div>
+        </div>
+        <div class="flex-col-50">
+          <div class="flex-row border-bottom">
+            <div class="flex-col-50 border-right pad-4">Dispatched through<br>&nbsp;</div>
+            <div class="flex-col-50 pad-4">Destination<br>&nbsp;</div>
+          </div>
+          <div class="flex-row">
+            <div style="width: 100%;" class="pad-4">Terms of Delivery<br>&nbsp;<br>&nbsp;</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th class="col-sl">Sl<br>No.</th>
+            <th class="col-desc text-center">Description of Goods</th>
+            <th class="col-hsn">HSN/SAC</th>
+            <th class="col-qty text-center">Quantity</th>
+            <th class="col-rate text-center">Rate</th>
+            <th class="col-per">per</th>
+            <th class="col-gst">GST %</th>
+            <th class="col-amt text-center">Amount</th>
+          </tr>
+        </thead>
+        <tbody id="items-body">
+        </tbody>
+        <tfoot>
+          <tr class="filler-row">
+            <td class="col-sl"></td>
+            <td class="col-desc"></td>
+            <td class="col-hsn"></td>
+            <td class="col-qty"></td>
+            <td class="col-rate"></td>
+            <td class="col-per"></td>
+            <td class="col-gst"></td>
+            <td class="col-amt"></td>
+          </tr>
+
+          <!-- GST Rows -->
+          <tr class="border-top">
+            <td colspan="3" class="text-right bold">Taxable Value</td>
+            <td class="col-qty"></td>
+            <td class="col-rate"></td>
+            <td class="col-per"></td>
+            <td class="col-gst"></td>
+            <td class="col-amt text-right bold" id="t-taxable"></td>
+          </tr>
+          <tr id="row-tax-container">
+            <!-- Dynamic GST Rows (CGST/SGST or IGST) -->
+          </tr>
+
+          <tr class="border-top">
+            <td colspan="3" class="text-right bold">Total</td>
+            <td class="col-qty text-right bold" id="t-qty-sum"></td>
+            <td class="col-rate"></td>
+            <td class="col-per"></td>
+            <td class="col-gst"></td>
+            <td class="col-amt text-right bold" id="t-grand"></td>
+          </tr>
+        </tfoot>
+      </table>
+
+      <!-- Amount in words -->
+      <div class="flex-row border-bottom" style="min-height: 40px;">
+        <div style="width: 100%; padding: 4px; display: flex; justify-content: space-between;">
+          <div>Amount Chargeable (in words)<br>
+            <div class="bold" id="amount-words">INR ...</div>
+          </div>
+          <div style="font-style: italic;">E. & O.E</div>
+        </div>
+      </div>
+
+      <!-- Declaration & Signature -->
+      <div class="flex-row">
+        <div class="pad-4" style="width: 60%; border-right: 1px solid #000;">
+          <span style="text-decoration: underline;">Declaration</span><br>
+          We declare that this invoice shows the actual price of<br>
+          the goods described and that all particulars are true<br>
+          and correct.
+        </div>
+        <div class="pad-4" style="width: 40%; position: relative; min-height: 80px;">
+          <div class="bold text-right">for ALOK BAGS</div>
+          <div style="position: absolute; bottom: 4px; right: 4px;">Authorised Signatory</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center" style="margin-top: 5px; font-size: 11px;">This is a Computer Generated Invoice</div>
+  </div>
+
+
+  <!-- ================= NON-GST TEMPLATE ================= -->
+  <div class="bill-container" id="nongst-template" style="display: none;">
+    <table class="ng-header-table">
+      <tr>
+        <td style="width:33%; text-align:left;">Invoice No. <span id="ng-inv-no">...</span></td>
+        <td style="width:34%; text-align:center;">
+          <div class="bold" style="font-size:18px; margin-bottom:3px;">ALOK BAGS</div>
+          <div style="font-size:14px; margin-bottom:3px;">Near Bank of Baroda, Chitri</div>
+          <div style="font-size:14px;">Mo. 8107720683, 9460020683</div>
+        </td>
+        <td style="width:33%; text-align:right;">Dated <span id="ng-inv-date">...</span></td>
+      </tr>
+    </table>
+
+    <div style="text-align: center; margin-bottom: 20px;">
+      <div style="font-size:15px; font-weight:bold; display:inline-block; vertical-align:top;">Party : &nbsp;</div>
+      <div style="display:inline-block; text-align:left; vertical-align:top; font-size:15px; font-weight:bold;">
+        <div id="ng-p-name">Loading...</div>
+        <div style="font-weight:normal; font-size:14px; margin-top:3px;" id="ng-p-billing">Address details...</div>
+      </div>
+    </div>
+
+    <table class="items-table" style="border-top:1px solid #000; border-bottom:1px solid #000;">
+      <thead>
+        <tr>
+          <th class="ng-col-desc" style="border-left:none;">Description of Goods</th>
+          <th class="ng-col-qty">Quantity</th>
+          <th class="ng-col-rate">Rate</th>
+          <th class="ng-col-per">per</th>
+          <th class="ng-col-amt" style="border-right:none;">Amount</th>
+        </tr>
+      </thead>
+      <tbody id="ng-items-body">
+      </tbody>
+      <tfoot>
+        <tr class="filler-row">
+          <td style="border-left:none;"></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td style="border-right:none;"></td>
+        </tr>
+        <tr class="border-top border-bottom">
+          <td class="text-right bold" style="border-left:none;">Total</td>
+          <td class="text-center bold" id="ng-t-qty-sum"></td>
+          <td></td>
+          <td></td>
+          <td class="text-right bold" style="border-right:none;" id="ng-t-grand"></td>
+        </tr>
+      </tfoot>
+    </table>
+
+    <div class="flex-row" style="margin-top:10px; justify-content:space-between;">
+      <div style="width:60%;">
+        <div>Amount Chargeable (in words)</div>
+        <div class="bold" id="ng-amount-words">Rs. ...</div>
+      </div>
+      <div style="width:40%; text-align:right;">
+        <div style="font-size:12px;">E. & O. E.</div>
+        <div class="bold" style="margin-top:20px;">for ALOK BAGS</div>
+        <div style="margin-top:40px;">Authorised Signatory</div>
+      </div>
+    </div>
+
+    <div class="text-center bold" style="text-decoration:underline; margin-top:50px; font-size:14px;">
+      ORDER & ESTIMATE
+    </div>
+  </div>
+
+
+  <script>
+    const API = 'api';
+
+    function formatINR(n) { return Number(n).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'); }
+    function numToWords(num) {
+      const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
+      const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+      if ((num = num.toString()).length > 9) return 'overflow';
+      let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+      if (!n) return; let str = '';
+      str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : '';
+      str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : '';
+      str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : '';
+      str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : '';
+      str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) + 'Only' : 'Only';
+      return str || 'Zero Only';
+    }
+
+    function formatDateStr(ds, style = 'short') {
+      if (!ds) return '';
+      const d = new Date(ds);
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      if (style === 'short') {
+        return d.getDate() + '-' + months[d.getMonth()] + '-' + d.getFullYear().toString().slice(-2);
+      } else {
+        return d.getDate() + '-' + months[d.getMonth()] + '-' + d.getFullYear();
+      }
+    }
+
+    async function loadInvoice() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const id = urlParams.get('id');
+      if (!id) return document.body.innerHTML = '<h1>No invoice ID specified in URL.</h1>';
+
+      try {
+        const res = await fetch(`${API}/invoices.php?id=${id}`);
+        if (!res.ok) throw new Error("Invoice not found");
+        const data = await res.json();
+
+        const isGst = data.bill_type !== 'non_gst';
+
+        let invNoClean = data.invoice_no;
+        const parts = data.invoice_no.split('-');
+        if (parts.length > 2) {
+          invNoClean = parseInt(parts[parts.length - 1], 10);
+        }
+
+        let sumQty = 0;
+        let lastUnit = 'pcs';
+        const tVal = data.total - data.tax_amount;
+
+        if (isGst) {
+          // Render GST Template
+          document.getElementById('gst-template').style.display = 'block';
+
+          document.getElementById('p-name').textContent = data.party_name;
+          document.getElementById('p-name-ship').textContent = data.party_name;
+          let billingAddr = (data.party_billing || '').replace(/\n/g, '<br>');
+          document.getElementById('p-billing').innerHTML = billingAddr;
+          document.getElementById('p-billing-ship').innerHTML = billingAddr;
+          document.getElementById('p-gstin').textContent = data.party_gstin || 'N/A';
+          document.getElementById('inv-no').textContent = invNoClean;
+          document.getElementById('inv-date').textContent = formatDateStr(data.invoice_date, 'short');
+
+          let html = '';
+          data.items.forEach((item, idx) => {
+            let rowTotal = parseFloat(item.amount) + parseFloat(item.tax_amount);
+            sumQty += parseFloat(item.qty);
+            lastUnit = item.unit || 'sqft';
+            let descText = item.description;
+            if (descText.includes('\n')) descText = descText.replace(/\n/g, '<br>&nbsp;&nbsp;&nbsp;&nbsp;');
+
+            html += `
+              <tr>
+                <td class="col-sl">${idx + 1}</td>
+                <td class="col-desc bold">${descText}</td>
+                <td class="col-hsn">${item.hsn || '-'}</td>
+                <td class="col-qty bold">${parseFloat(item.qty).toString() + ' ' + lastUnit}</td>
+                <td class="col-rate">${formatINR(item.price)}</td>
+                <td class="col-per">${lastUnit}</td>
+                <td class="col-gst">${item.gst_rate}%</td>
+                <td class="col-amt bold">${formatINR(rowTotal)}</td>
+              </tr>
+            `;
+          });
+          document.getElementById('items-body').innerHTML = html;
+
+          document.getElementById('t-qty-sum').textContent = sumQty.toString() + ' ' + lastUnit;
+          document.getElementById('t-taxable').textContent = formatINR(tVal);
+          
+          const taxContainer = document.getElementById('row-tax-container');
+          if (data.tax_type === 'igst') {
+            taxContainer.outerHTML = `
+              <tr>
+                <td colspan="3" class="text-right bold">Add: IGST</td>
+                <td class="col-qty"></td> <td class="col-rate"></td> <td class="col-per"></td> <td class="col-gst"></td>
+                <td class="col-amt text-right bold">${formatINR(data.tax_amount)}</td>
+              </tr>`;
+          } else {
+            taxContainer.outerHTML = `
+              <tr>
+                <td colspan="3" class="text-right bold">Add: CGST</td>
+                <td class="col-qty"></td> <td class="col-rate"></td> <td class="col-per"></td> <td class="col-gst"></td>
+                <td class="col-amt text-right bold">${formatINR(data.tax_amount / 2)}</td>
+              </tr>
+              <tr>
+                <td colspan="3" class="text-right bold">Add: SGST</td>
+                <td class="col-qty"></td> <td class="col-rate"></td> <td class="col-per"></td> <td class="col-gst"></td>
+                <td class="col-amt text-right bold">${formatINR(data.tax_amount / 2)}</td>
+              </tr>`;
+          }
+          document.getElementById('t-grand').textContent = '₹ ' + formatINR(data.total);
+          document.getElementById('amount-words').textContent = 'INR ' + numToWords(Math.round(data.total));
+
+        } else {
+          // Render Non-GST Template
+          document.getElementById('nongst-template').style.display = 'block';
+
+          document.getElementById('ng-p-name').textContent = data.party_name;
+          document.getElementById('ng-p-billing').innerHTML = (data.party_billing || '').replace(/\n/g, '<br>');
+          document.getElementById('ng-inv-no').textContent = invNoClean;
+          document.getElementById('ng-inv-date').textContent = formatDateStr(data.invoice_date, 'long');
+
+          let html = '';
+          data.items.forEach((item, idx) => {
+            let rowTotal = parseFloat(item.amount);
+            sumQty += parseFloat(item.qty);
+            lastUnit = item.unit || 'pcs';
+            let descText = item.description;
+            if (descText.includes('\n')) descText = descText.replace(/\n/g, '<br>&nbsp;&nbsp;&nbsp;&nbsp;');
+
+            html += `
+              <tr>
+                <td class="ng-col-desc bold" style="border-left:none;">${descText}</td>
+                <td class="ng-col-qty bold text-center">${parseFloat(item.qty).toString() + ' ' + lastUnit}</td>
+                <td class="ng-col-rate text-center">${formatINR(item.price)}</td>
+                <td class="ng-col-per text-center">${lastUnit}</td>
+                <td class="ng-col-amt bold text-right" style="border-right:none;">${formatINR(rowTotal)}</td>
+              </tr>
+            `;
+          });
+          document.getElementById('ng-items-body').innerHTML = html;
+
+          document.getElementById('ng-t-qty-sum').textContent = sumQty.toString() + ' ' + lastUnit;
+          document.getElementById('ng-t-grand').textContent = formatINR(data.total);
+          document.getElementById('ng-amount-words').textContent = 'Rs. ' + numToWords(Math.round(data.total));
+        }
+
+      } catch (err) {
+        console.error('Bill load error:', err);
+        document.body.style.background = '#fff';
+        document.body.style.padding = '40px';
+        document.body.style.fontFamily = 'Arial, sans-serif';
+        document.body.innerHTML = `
+          <div style="max-width:500px;margin:80px auto;text-align:center;">
+            <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
+            <h2 style="color:#c62828;">Error Loading Invoice</h2>
+            <p style="color:#666;margin-bottom:20px;">${err.message}</p>
+            <a href="sales.html" style="background:#E05A20;color:#fff;padding:10px 24px;border-radius:8px;text-decoration:none;font-size:14px;">← Back to Sales</a>
+          </div>`;
+      }
+    }
+
+    loadInvoice();
+  </script>
+</body>
+
+</html>

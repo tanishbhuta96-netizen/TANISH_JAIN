@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ALOK BAGS — Ledger Module: Party-wise account statements">
+  <title>ALOK BAGS — Ledger</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="ledger.css">
+</head>
+
+<body>
+
+  <!-- ═══════════ TOP NAVBAR ═══════════ -->
+  <nav class="top-nav" id="top-nav">
+    <div class="top-nav__left">
+      <a href="index.html" class="logo-box" id="logo-box">AB</a>
+      <a href="index.html" class="brand-name">ALOK BAGS</a>
+    </div>
+    <ul class="top-nav__links" id="main-nav-links">
+      <li><a href="index.html" id="nav-dashboard">Dashboard</a></li>
+      <li><a href="manufacturing.html" id="nav-manufacturing">Manufacturing</a></li>
+      <li><a href="sales.html" class="active" id="nav-accounts">Accounts</a></li>
+      <li><a href="reports.html" id="nav-reports">Reports</a></li>
+      <li><a href="settings.html" id="nav-settings">Settings</a></li>
+    </ul>
+    <div class="top-nav__user" id="user-chip">
+      <div class="avatar-chip">AD</div>
+      <span class="user-name">Admin</span>
+    </div>
+  </nav>
+
+  <!-- ═══════════ SUB NAVBAR ═══════════ -->
+  <nav class="sub-nav" id="sub-nav">
+    <ul>
+      <li><a href="index.html" id="sub-overview">Overview</a></li>
+      <li><a href="sales.html" id="sub-sales">Sales</a></li>
+      <li><a href="purchases.html" id="sub-purchase">Purchase</a></li>
+      <li><a href="payments.html" id="sub-payments">Payments</a></li>
+      <li><a href="#" id="sub-production">Production</a></li>
+      <li><a href="#" id="sub-inventory">Inventory</a></li>
+      <li><a href="#" id="sub-dispatch">Dispatch</a></li>
+      <li><a href="ledger.html" class="active" id="sub-ledger">Ledger</a></li>
+      <li><a href="#" id="sub-gst">GST / Tax</a></li>
+    </ul>
+  </nav>
+
+  <!-- ═══════════ PAGE HEADER ═══════════ -->
+  <header class="page-header" id="page-header">
+    <div class="page-header__left">
+      <h1 class="page-title">Ledger</h1>
+      <p class="page-subtitle">Party-wise account statement</p>
+    </div>
+    <div class="page-header__actions">
+      <button class="btn-outline" id="btn-add-party" onclick="openNewPartyModal()">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        Add Party
+      </button>
+      <button class="btn-receive" id="btn-receive-payment" onclick="openPaymentModal('receive')">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="17 11 21 7 17 3"/><line x1="21" y1="7" x2="9" y2="7"/><path d="M3 21v-5a4 4 0 0 1 4-4h14"/></svg>
+        Receive Payment
+      </button>
+      <button class="btn-pay" id="btn-pay-amount" onclick="openPaymentModal('pay')">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="7 13 3 17 7 21"/><line x1="3" y1="17" x2="15" y2="17"/><path d="M21 3v5a4 4 0 0 1-4 4H3"/></svg>
+        Pay Amount
+      </button>
+      <button class="btn-outline" id="btn-new-entry" onclick="openNewEntryModal()">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        New Entry
+      </button>
+    </div>
+  </header>
+
+  <!-- ═══════════ FILTER BAR ═══════════ -->
+  <div class="filter-bar" id="filter-bar">
+    <select class="filter-select" id="filter-party-type">
+      <option value="all">All Parties</option>
+      <option value="customer">Customers</option>
+      <option value="supplier">Suppliers</option>
+      <option value="bank">Banks</option>
+      <option value="expense">Expenses</option>
+    </select>
+    <div class="filter-search-wrap">
+      <svg class="filter-search-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" class="filter-search" id="filter-search" placeholder="Search party name...">
+    </div>
+    <div class="filter-dates">
+      <input type="date" class="filter-date" id="filter-from" value="2026-04-01">
+      <span class="filter-date-sep">—</span>
+      <input type="date" class="filter-date" id="filter-to" value="2026-04-30">
+    </div>
+    <button class="btn-filter" id="btn-apply-filter" onclick="applyFilter()">Apply Filter</button>
+  </div>
+
+  <!-- ═══════════ MAIN LAYOUT ═══════════ -->
+  <div class="ledger-layout" id="ledger-layout">
+
+    <!-- ── LEFT SIDEBAR: Party List ── -->
+    <aside class="party-sidebar" id="party-sidebar">
+      <div class="party-list" id="party-list">
+        <!-- Populated by JS -->
+      </div>
+    </aside>
+
+    <!-- ── RIGHT PANEL: Statement ── -->
+    <section class="ledger-main" id="ledger-main">
+
+      <!-- Party Header Card -->
+      <div class="party-header-card" id="party-header-card">
+        <div class="phc-top">
+          <div class="phc-name-wrap">
+            <h2 class="phc-name" id="phc-name">Ramesh Traders</h2>
+            <span class="party-badge badge-customer" id="phc-badge">Customer</span>
+            <span class="payment-status-badge" id="phc-status-badge"></span>
+          </div>
+          <div class="phc-opening">
+            <span class="phc-opening-label">Opening Balance</span>
+            <span class="phc-opening-value" id="phc-opening">₹0</span>
+          </div>
+        </div>
+        <div class="phc-metrics">
+          <div class="metric-box">
+            <span class="metric-label">Total Debit</span>
+            <span class="metric-value metric-debit" id="phc-total-debit">₹88,000</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Total Credit</span>
+            <span class="metric-value metric-credit" id="phc-total-credit">₹45,500</span>
+          </div>
+          <div class="metric-box metric-box--highlight">
+            <span class="metric-label">Closing Balance</span>
+            <span class="metric-value metric-closing" id="phc-closing">₹42,500 Dr</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mailing Details Card -->
+      <div class="mailing-card" id="mailing-card">
+        <div class="mailing-card__header">
+          <span class="mailing-card__title">Mailing Details</span>
+          <button class="mailing-card__toggle" id="mailing-toggle" onclick="toggleMailing()">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+        <div class="mailing-card__body" id="mailing-body">
+          <div class="mailing-grid">
+            <!-- LEFT: Contact Information -->
+            <div class="mailing-col">
+              <h3 class="mailing-col__title">Contact Information</h3>
+              <div class="mailing-field">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#666" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <span class="mailing-field__value" id="mail-contact">Mr. Ramesh Gupta</span>
+              </div>
+              <div class="mailing-field">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#666" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                <a href="tel:+919876543210" class="mailing-field__link" id="mail-mobile">+91 98765 43210</a>
+              </div>
+              <div class="mailing-field">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.981.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+                <a href="https://wa.me/919876543210" target="_blank" class="mailing-field__link mailing-field__link--wa" id="mail-whatsapp">+91 98765 43210</a>
+              </div>
+              <div class="mailing-field">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#666" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <a href="mailto:ramesh@rameshtraders.com" class="mailing-field__link" id="mail-email">ramesh@rameshtraders.com</a>
+              </div>
+            </div>
+            <!-- RIGHT: Address & Business -->
+            <div class="mailing-col">
+              <h3 class="mailing-col__title">Address & Business Details</h3>
+              <div class="mailing-field">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#666" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span class="mailing-field__value" id="mail-billing">45, Industrial Area, Phase 2, Jaipur, Rajasthan — 302013</span>
+              </div>
+              <div class="mailing-field">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#666" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                <span class="mailing-field__value" id="mail-shipping">Same as billing</span>
+              </div>
+              <div class="mailing-field-row">
+                <div class="mailing-field mailing-field--half">
+                  <span class="mailing-field__label">GSTIN</span>
+                  <span class="mailing-field__value" id="mail-gstin">08AABCT1234A1Z5</span>
+                </div>
+                <div class="mailing-field mailing-field--half">
+                  <span class="mailing-field__label">PAN</span>
+                  <span class="mailing-field__value" id="mail-pan">AABCT1234A</span>
+                </div>
+              </div>
+              <div class="mailing-field-row">
+                <div class="mailing-field mailing-field--half">
+                  <span class="mailing-field__label">Payment Terms</span>
+                  <span class="mailing-field__value" id="mail-terms">Net 30 days</span>
+                </div>
+                <div class="mailing-field mailing-field--half">
+                  <span class="mailing-field__label">Credit Limit</span>
+                  <span class="mailing-field__value" id="mail-credit">₹1,00,000</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Mailing Footer Actions -->
+          <div class="mailing-actions">
+            <button class="mailing-action-btn mailing-action-btn--email" id="btn-mail-send-email" onclick="openEmailPanel()">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Send Email
+            </button>
+            <button class="mailing-action-btn mailing-action-btn--wa" id="btn-mail-send-wa" onclick="sendWhatsApp()">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.981.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+              Send WhatsApp
+            </button>
+            <button class="mailing-action-btn mailing-action-btn--copy" id="btn-mail-copy" onclick="copyPartyDetails()">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Copy Details
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transaction Filter Bar (in-panel) -->
+      <div class="txn-filter-bar" id="txn-filter-bar">
+        <div class="txn-filter-group">
+          <label class="txn-filter-label">From</label>
+          <input type="date" class="txn-filter-date" id="txn-filter-from">
+        </div>
+        <div class="txn-filter-group">
+          <label class="txn-filter-label">To</label>
+          <input type="date" class="txn-filter-date" id="txn-filter-to">
+        </div>
+        <div class="txn-filter-group txn-filter-group--type">
+          <label class="txn-filter-label">Type</label>
+          <select class="txn-filter-select" id="txn-filter-type">
+            <option value="all">All Types</option>
+            <option value="Sales Invoice">Sale</option>
+            <option value="payment_received">Payment Received</option>
+            <option value="payment_given">Payment Given</option>
+            <option value="Purchase">Purchase</option>
+            <option value="Receipt">Receipt</option>
+            <option value="Payment">Payment</option>
+          </select>
+        </div>
+        <div class="txn-filter-group txn-filter-group--ref">
+          <label class="txn-filter-label">Reference</label>
+          <input type="text" class="txn-filter-ref" id="txn-filter-ref" placeholder="Search ref / voucher...">
+        </div>
+        <button class="btn-filter" id="btn-txn-filter" onclick="applyTxnFilter()">Apply</button>
+        <button class="btn-text" id="btn-txn-clear" onclick="clearTxnFilter()">Clear</button>
+      </div>
+
+      <!-- Transaction Table -->
+      <div class="txn-table-wrap" id="txn-table-wrap">
+        <table class="txn-table" id="txn-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Reference</th>
+              <th>Type</th>
+              <th>Description / Note</th>
+              <th>Method</th>
+              <th class="col-amt">Debit (Dr)</th>
+              <th class="col-amt">Credit (Cr)</th>
+              <th class="col-amt">Balance</th>
+            </tr>
+          </thead>
+          <tbody id="txn-tbody">
+            <!-- Populated by JS -->
+          </tbody>
+          <tfoot id="txn-tfoot">
+            <tr class="txn-footer-row">
+              <td colspan="5"><strong>Closing Balance</strong></td>
+              <td class="col-amt" id="tfoot-debit"></td>
+              <td class="col-amt" id="tfoot-credit"></td>
+              <td class="col-amt"><strong class="closing-balance-value" id="tfoot-closing">—</strong></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Ageing Analysis -->
+      <div class="ageing-panel" id="ageing-panel">
+        <h3 class="ageing-title">Ageing Analysis</h3>
+        <div class="ageing-boxes">
+          <div class="ageing-box ageing-box--green" id="ageing-0-30">
+            <span class="ageing-box__label">0–30 days</span>
+            <span class="ageing-box__value">₹42,500</span>
+          </div>
+          <div class="ageing-box ageing-box--gray" id="ageing-31-60">
+            <span class="ageing-box__label">31–60 days</span>
+            <span class="ageing-box__value">₹0</span>
+          </div>
+          <div class="ageing-box ageing-box--gray" id="ageing-61-90">
+            <span class="ageing-box__label">61–90 days</span>
+            <span class="ageing-box__value">₹0</span>
+          </div>
+          <div class="ageing-box ageing-box--gray" id="ageing-90plus">
+            <span class="ageing-box__label">90+ days</span>
+            <span class="ageing-box__value">₹0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="ledger-actions" id="ledger-actions">
+        <button class="btn-outline" id="btn-print" onclick="printStatement()">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Print Statement
+        </button>
+        <button class="btn-outline" id="btn-export" onclick="exportExcel()">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export to Excel
+        </button>
+        <button class="btn-wa" id="btn-wa-statement" onclick="sendWhatsApp()">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.981.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+          Send on WhatsApp
+        </button>
+        <button class="btn-email" id="btn-email-statement" onclick="openEmailPanel()">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Send Email
+        </button>
+      </div>
+
+    </section>
+  </div>
+
+  <!-- ═══════════ EMAIL SLIDE-IN PANEL ═══════════ -->
+  <div class="email-overlay" id="email-overlay" onclick="closeEmailPanel()"></div>
+  <aside class="email-panel" id="email-panel">
+    <div class="email-panel__header">
+      <h3 class="email-panel__title">Send Statement by Email</h3>
+      <button class="email-panel__close" id="email-close" onclick="closeEmailPanel()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="email-panel__body">
+      <div class="email-field">
+        <label class="email-label">To</label>
+        <input type="email" class="email-input" id="email-to" value="ramesh@rameshtraders.com">
+      </div>
+      <div class="email-field">
+        <label class="email-label">CC</label>
+        <input type="email" class="email-input" id="email-cc" placeholder="Optional">
+      </div>
+      <div class="email-field">
+        <label class="email-label">Subject</label>
+        <input type="text" class="email-input" id="email-subject" value="Account Statement — Ramesh Traders — Apr 2026">
+      </div>
+      <div class="email-field">
+        <label class="email-label">Message</label>
+        <textarea class="email-textarea" id="email-body" rows="9">Dear Mr. Ramesh Gupta,
+
+Please find attached your account statement for the period 01 Apr 2026 to 30 Apr 2026.
+
+Closing Balance: ₹42,500 Dr
+
+Kindly arrange payment at the earliest.
+
+Regards,
+ALOK BAGS</textarea>
+      </div>
+      <div class="email-attachment">
+        <div class="email-attachment__info">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#E05A20" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <div class="email-attachment__text">
+            <span class="email-attachment__name" id="email-attach-name">Account_Statement_Ramesh_Traders_Apr2026.pdf</span>
+            <span class="email-attachment__size">~124 KB</span>
+          </div>
+        </div>
+        <button class="email-attachment__remove" id="email-attach-remove" onclick="removeAttachment()">✕</button>
+      </div>
+      <div class="email-options">
+        <label class="email-checkbox"><input type="checkbox" checked id="email-opt-pdf"> Attach PDF statement</label>
+        <label class="email-checkbox"><input type="checkbox" checked id="email-opt-details"> Include transaction details</label>
+        <label class="email-checkbox"><input type="checkbox" id="email-opt-ageing"> Include ageing analysis</label>
+      </div>
+    </div>
+    <div class="email-panel__footer">
+      <button class="btn-primary" id="btn-send-email" onclick="sendEmail()">Send Email</button>
+      <button class="btn-outline" id="btn-preview-email" onclick="previewEmail()">Preview Email</button>
+      <button class="btn-text" id="btn-cancel-email" onclick="closeEmailPanel()">Cancel</button>
+    </div>
+  </aside>
+
+  <!-- ═══════════ NEW PARTY MODAL ═══════════ -->
+  <div class="modal-overlay" id="modal-overlay-party" onclick="closeNewPartyModal()"></div>
+  <div class="modal" id="modal-new-party">
+    <div class="modal__header">
+      <h3 class="modal__title">Add New Party</h3>
+      <button class="modal__close" onclick="closeNewPartyModal()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <div class="modal-row">
+        <div class="modal-field modal-field--wide">
+          <label>Party Name *</label>
+          <input type="text" id="np-name" placeholder="e.g. Ramesh Traders" required>
+        </div>
+        <div class="modal-field">
+          <label>Party Type *</label>
+          <select id="np-type">
+            <option value="customer">Customer</option>
+            <option value="supplier">Supplier</option>
+            <option value="bank">Bank</option>
+            <option value="expense">Expense</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Contact Person</label>
+          <input type="text" id="np-contact" placeholder="e.g. Mr. Ramesh Gupta">
+        </div>
+        <div class="modal-field">
+          <label>Mobile</label>
+          <input type="text" id="np-mobile" placeholder="+91 98765 43210">
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>WhatsApp</label>
+          <input type="text" id="np-whatsapp" placeholder="+91 98765 43210">
+        </div>
+        <div class="modal-field">
+          <label>Email</label>
+          <input type="email" id="np-email" placeholder="name@company.com">
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>City</label>
+          <input type="text" id="np-city" placeholder="e.g. Jaipur">
+        </div>
+        <div class="modal-field">
+          <label>State</label>
+          <select id="np-state">
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+            <option value="Assam">Assam</option>
+            <option value="Bihar">Bihar</option>
+            <option value="Chhattisgarh">Chhattisgarh</option>
+            <option value="Goa">Goa</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Haryana">Haryana</option>
+            <option value="Himachal Pradesh">Himachal Pradesh</option>
+            <option value="Jharkhand">Jharkhand</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Kerala">Kerala</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Manipur">Manipur</option>
+            <option value="Meghalaya">Meghalaya</option>
+            <option value="Mizoram">Mizoram</option>
+            <option value="Nagaland">Nagaland</option>
+            <option value="Odisha">Odisha</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Rajasthan" selected>Rajasthan</option>
+            <option value="Sikkim">Sikkim</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Tripura">Tripura</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="Uttarakhand">Uttarakhand</option>
+            <option value="West Bengal">West Bengal</option>
+            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+            <option value="Chandigarh">Chandigarh</option>
+            <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+            <option value="Ladakh">Ladakh</option>
+            <option value="Lakshadweep">Lakshadweep</option>
+            <option value="Puducherry">Puducherry</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label>Pincode</label>
+          <input type="text" id="np-pincode" placeholder="6 digits">
+        </div>
+      </div>
+      <div class="modal-field modal-field--full">
+        <label>Billing Address</label>
+        <input type="text" id="np-billing" placeholder="Full address with PIN code">
+      </div>
+      <div class="modal-field modal-field--full">
+        <label>Shipping Address</label>
+        <input type="text" id="np-shipping" placeholder="Leave blank if same as billing">
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>GSTIN</label>
+          <input type="text" id="np-gstin" placeholder="08AABCT1234A1Z5">
+        </div>
+        <div class="modal-field">
+          <label>PAN</label>
+          <input type="text" id="np-pan" placeholder="AABCT1234A">
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Payment Terms</label>
+          <input type="text" id="np-terms" placeholder="Net 30 days" value="Net 30 days">
+        </div>
+        <div class="modal-field">
+          <label>Credit Limit</label>
+          <input type="text" id="np-credit" placeholder="₹1,00,000">
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>Opening Balance (₹)</label>
+        <input type="number" id="np-opening" value="0" step="0.01" min="0">
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn-primary" id="btn-save-party" onclick="saveNewParty()">Save Party</button>
+      <button class="btn-text" onclick="closeNewPartyModal()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ NEW ENTRY (TRANSACTION) MODAL ═══════════ -->
+  <div class="modal-overlay" id="modal-overlay-entry" onclick="closeNewEntryModal()"></div>
+  <div class="modal" id="modal-new-entry">
+    <div class="modal__header">
+      <h3 class="modal__title">New Ledger Entry</h3>
+      <button class="modal__close" onclick="closeNewEntryModal()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <div class="modal-row">
+        <div class="modal-field modal-field--wide">
+          <label>Party *</label>
+          <select id="ne-party"></select>
+        </div>
+        <div class="modal-field">
+          <label>Date *</label>
+          <input type="date" id="ne-date">
+        </div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Voucher / Reference No. *</label>
+          <input type="text" id="ne-voucher" placeholder="INV-1072">
+        </div>
+        <div class="modal-field">
+          <label>Type *</label>
+          <select id="ne-type">
+            <option value="Sales Invoice">Sales Invoice</option>
+            <option value="Purchase">Purchase</option>
+            <option value="Receipt">Receipt</option>
+            <option value="Payment">Payment</option>
+            <option value="Debit Note">Debit Note</option>
+            <option value="Credit Note">Credit Note</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-field modal-field--full">
+        <label>Description</label>
+        <input type="text" id="ne-desc" placeholder="e.g. Product supply">
+      </div>
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Debit Amount (₹)</label>
+          <input type="number" id="ne-debit" value="0" step="0.01" min="0">
+        </div>
+        <div class="modal-field">
+          <label>Credit Amount (₹)</label>
+          <input type="number" id="ne-credit" value="0" step="0.01" min="0">
+        </div>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn-primary" id="btn-save-entry" onclick="saveNewEntry()">Save Entry</button>
+      <button class="btn-text" onclick="closeNewEntryModal()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ RECEIVE / PAY PAYMENT MODAL ═══════════ -->
+  <div class="modal-overlay" id="modal-overlay-payment" onclick="closePaymentModal()"></div>
+  <div class="modal" id="modal-payment">
+    <div class="modal__header">
+      <div class="modal-payment-title-wrap">
+        <span class="modal-payment-icon" id="modal-payment-icon">↙</span>
+        <h3 class="modal__title" id="modal-payment-title">Receive Payment</h3>
+      </div>
+      <button class="modal__close" id="modal-payment-close" onclick="closePaymentModal()">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal__body">
+      <!-- Party & Date -->
+      <div class="modal-row">
+        <div class="modal-field modal-field--wide">
+          <label>Party *</label>
+          <select id="pm-party"></select>
+        </div>
+        <div class="modal-field">
+          <label>Date *</label>
+          <input type="date" id="pm-date">
+        </div>
+      </div>
+      <!-- Amount -->
+      <div class="modal-field modal-field--full">
+        <label>Amount (₹) *</label>
+        <input type="number" id="pm-amount" placeholder="0.00" step="0.01" min="0.01" class="pm-amount-input">
+      </div>
+      <!-- Payment Method Chips -->
+      <div class="modal-field modal-field--full">
+        <label>Payment Method *</label>
+        <div class="pay-method-chips" id="pay-method-chips">
+          <button type="button" class="pay-chip pay-chip--active" id="chip-cash" data-method="cash" onclick="selectPayChip(this)">💵 Cash</button>
+          <button type="button" class="pay-chip" id="chip-upi" data-method="upi" onclick="selectPayChip(this)">📱 UPI</button>
+          <button type="button" class="pay-chip" id="chip-bank" data-method="bank" onclick="selectPayChip(this)">🏦 Bank Transfer</button>
+        </div>
+      </div>
+      <!-- Reference -->  
+      <div class="modal-field modal-field--full">
+        <label>Reference No. <span style="color:#aaa;font-weight:400">(optional)</span></label>
+        <input type="text" id="pm-ref" placeholder="e.g. UTR123456, Cheque No.">
+      </div>
+      <!-- Note -->
+      <div class="modal-field modal-field--full">
+        <label>Note <span style="color:#aaa;font-weight:400">(optional)</span></label>
+        <textarea id="pm-note" class="pm-note-textarea" placeholder="Add a note..." rows="3"></textarea>
+      </div>
+    </div>
+    <div class="modal__footer">
+      <button class="btn-primary" id="btn-save-payment" onclick="savePayment()">Save</button>
+      <button class="btn-text" onclick="closePaymentModal()">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ═══════════ TOAST ═══════════ -->
+  <div class="toast" id="toast"></div>
+
+  <script src="ledger.js"></script>
+</body>
+
+</html>
